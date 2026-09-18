@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founders Summit 2027 — Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75,700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'CommitMono';
+  src: url('./fonts/CommitMonolaravel-new-200-Regular.otf') format('opentype');
+  font-weight: 200; font-style: normal;
+}
+@font-face {
+  font-family: 'CommitMono';
+  src: url('./fonts/CommitMonolaravel-new-300-Regular.otf') format('opentype');
+  font-weight: 300; font-style: normal;
+}
+@font-face {
+  font-family: 'CommitMono';
+  src: url('./fonts/CommitMonolaravel-new-400-Regular.otf') format('opentype');
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: 'CommitMono';
+  src: url('./fonts/CommitMonolaravel-new-600-Regular.otf') format('opentype');
+  font-weight: 600; font-style: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:     #121212;
+  --cream:  #f1f0ef;
+  --cream2: #e2e1de;
+  --red:    #f53003;
+  --border: #3c3c3c;
+  --muted:  #a09890;
+}
+
+html { scroll-behavior: smooth; overflow-x: clip; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'CommitMono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Container ──────────────────────────────────────────────────────────── */
+.wrap {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 80px;
+  border-left: 0.5px solid var(--border);
+  border-right: 0.5px solid var(--border);
+}
+
+/* ── Nav ────────────────────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+}
+.nav-inner {
+  display: flex;
+  align-items: stretch;
+  height: 80px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  border-right: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.nav-right {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+}
+.nav-links {
+  display: flex;
+  align-items: stretch;
+  list-style: none;
+}
+.nav-links li {
+  display: flex;
+}
+.nav-links a {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  border-right: 0.5px solid var(--border);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--cream); }
+.nav-spacer { flex: 1; }
+.nav-cta {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  border-left: 0.5px solid var(--border);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--red);
+  transition: background 0.15s, color 0.15s;
+}
+.nav-cta:hover { background: var(--red); color: var(--cream); }
+
+/* ── Divider strip ──────────────────────────────────────────────────────── */
+.strip {
+  height: 20px;
+  border-top: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+.hero {
+  height: 598px;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 65% 75% at 42% 50%, rgba(18,18,18,0.92) 20%, rgba(18,18,18,0.4) 60%, transparent 100%),
+    linear-gradient(to right, rgba(18,18,18,0.7) 0%, transparent 20%),
+    linear-gradient(to left,  rgba(18,18,18,0.7) 0%, transparent 20%),
+    linear-gradient(to bottom, rgba(18,18,18,0.6) 0%, transparent 15%),
+    linear-gradient(to top,   rgba(18,18,18,0.6) 0%, transparent 15%);
+  pointer-events: none;
+  z-index: 1;
+}
+#heroGrid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-content {
+  padding: 40px 40px 120px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+.hero-headline {
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  font-stretch: condensed;
+  font-size: clamp(100px, 14vw, 200px);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.hero-headline .dot { color: var(--red); }
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: calc(100% - 80px);
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+}
+.hero-meta-block {
+  font-size: 13px;
+  font-weight: 425;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.hero-meta-block .red { color: var(--red); }
+
+/* ── Section grid ───────────────────────────────────────────────────────── */
+.section-row {
+  display: flex;
+  align-items: stretch;
+}
+.section-left {
+  width: 440px;
+  flex-shrink: 0;
+  border-right: 0.5px solid var(--border);
+  padding: 56px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.section-num {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.section-title {
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  font-stretch: condensed;
+  font-size: clamp(64px, 7vw, 100px);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.section-title .dot { color: var(--red); }
+.section-right {
+  flex: 1;
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Body text styles */
+.body-lead {
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 1.65;
+  color: var(--cream);
+}
+.body-text {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--cream);
+}
+.format-divider {
+  display: block;
+  width: calc(100% + 96px);
+  margin-left: -48px;
+  margin-right: -48px;
+  border: none;
+  border-top: 0.5px solid var(--border);
+}
+.arrow-item { margin-bottom: 0; padding: 24px 0; }
+.arrow-label {
+  color: var(--red);
+  display: block;
+  margin-bottom: 2px;
+}
+.arrow-body {
+  color: var(--cream);
+  opacity: 0.75;
+}
+
+/* ── CTA ────────────────────────────────────────────────────────────────── */
+.cta-section {
+  border-bottom: 0.5px solid var(--border);
+}
+.cta-inner {
+  display: flex;
+  align-items: stretch;
+}
+.cta-left {
+  flex: 1;
+  border-right: 0.5px solid var(--border);
+  padding: 72px 40px;
+}
+.cta-headline {
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  font-stretch: condensed;
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 0.84;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 40px;
+}
+.cta-headline .dot { color: var(--red); }
+.cta-sub {
+  font-size: 15px;
+  font-weight: 200;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 440px;
+}
+.cta-right {
+  width: 400px;
+  flex-shrink: 0;
+  padding: 72px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cta-meta {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.btn-red {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  padding: 18px 28px;
+  background: var(--red);
+  color: #fff;
+  border: 0.5px solid var(--red);
+  line-height: 1;
+  transition: background 0.15s;
+  width: 100%;
+  text-align: center;
+}
+.btn-red:hover { background: transparent; color: var(--red); }
+.btn-outline {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding: 14px 20px;
+  border: 0.5px solid var(--border);
+  color: var(--muted);
+  line-height: 1;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-outline:hover { border-color: var(--cream); color: var(--cream); }
+.cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.org-footer {
+  position: fixed;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 80px;
+  background: var(--bg);
+  border-top: 0.5px solid var(--border);
+  border-left: 0.5px solid var(--border);
+  border-right: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 200;
+}
+.org-label {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── Scroll animations ──────────────────────────────────────────────────── */
+.clip-line {
+  display: block;
+  overflow: hidden;
+}
+.clip-line > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.clip-line.in > span { transform: translateY(0); }
+
+[data-a] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-a="left"] { transform: translateX(-20px) translateY(0); }
+[data-a="fade"] { transform: none; }
+[data-a].in { opacity: 1; transform: none; }
+
+[data-stagger] > *:not(hr) {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-stagger].in > *:not(hr) { opacity: 1; transform: none; }
+
+/* ── Cursor ─────────────────────────────────────────────────────────────── */
+.cur-dot {
+  position: fixed; width: 5px; height: 5px;
+  background: var(--red);
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .1s, height .1s;
+}
+
+@media (max-width: 860px) {
+  .wrap { border: none; }
+  .nav-links { display: none; }
+  .nav-spacer { display: none; }
+  .nav-logo { padding: 0 20px; }
+  .nav-cta { padding: 0 20px; }
+  .org-footer { border-left: none; border-right: none; }
+  .hero-content { padding: 40px 24px; }
+  .hero-meta { flex-direction: column; gap: 16px; }
+  .section-row { flex-direction: column; }
+  .section-left { width: 100%; border-right: none; border-bottom: 0.5px solid var(--border); padding: 40px 24px; }
+  .section-right { padding: 40px 24px; }
+  .cta-inner { flex-direction: column; }
+  .cta-left { border-right: none; border-bottom: 0.5px solid var(--border); padding: 48px 24px; }
+  .cta-right { width: 100%; padding: 40px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="cDot"></div>
+
+<div class="wrap">
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <svg width="89" height="40" viewBox="0 0 89 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M70.9761 39.7417V35.6612H75.0566V39.7417H70.9761Z" fill="#F53003"/>
+<path d="M65.387 39.7417V23.9878H61.9263V21.1469H72.515V23.9878H69.0543V39.7417H65.387Z" fill="#F1F0EF"/>
+<path d="M57.7378 39.7417V21.1469H61.4051V39.7417H57.7378Z" fill="#F1F0EF"/>
+<path d="M40.5864 39.7417V21.1469H45.7258L49.6514 38.6054H47.1462L51.0202 21.1469H56.1854V39.7417H52.6214V23.6779L53.1637 23.7037L49.6255 39.7417H46.9396L43.4015 23.7037L43.9438 23.6779V39.7417H40.5864Z" fill="#F1F0EF"/>
+<path d="M23.4355 39.7417V21.1469H28.5749L32.5005 38.6054H29.9954L33.8693 21.1469H39.0345V39.7417H35.4705V23.6779L36.0128 23.7037L32.4747 39.7417H29.7888L26.2506 23.7037L26.7929 23.6779V39.7417H23.4355Z" fill="#F1F0EF"/>
+<path d="M16.7451 40C15.0234 40 13.7149 39.5007 12.8196 38.502C11.9415 37.4862 11.5024 36.1174 11.5024 34.3957V21.1469H15.1697V35.248C15.1697 35.8678 15.3075 36.3327 15.583 36.6426C15.8757 36.9525 16.263 37.1074 16.7451 37.1074C17.2444 37.1074 17.6318 36.9525 17.9073 36.6426C18.1828 36.3327 18.3205 35.8678 18.3205 35.248V21.1469H21.9878V34.3957C21.9878 36.1174 21.5402 37.4862 20.6449 38.502C19.7668 39.5007 18.4669 40 16.7451 40Z" fill="#F1F0EF"/>
+<path d="M5.61157 40C3.83818 40 2.49522 39.4577 1.5827 38.373C0.687398 37.271 0.239746 35.7473 0.239746 33.8017H3.67461C3.67461 34.9037 3.864 35.7387 4.24279 36.3069C4.62157 36.8751 5.12948 37.1591 5.76652 37.1591C6.23139 37.1591 6.61017 37.0128 6.90287 36.7201C7.19557 36.4102 7.34191 35.9797 7.34191 35.4288C7.34191 34.9295 7.20417 34.4388 6.9287 33.9567C6.65322 33.4746 6.20557 33.0011 5.58574 32.5363L3.67461 31.09C2.69322 30.3324 1.9787 29.5232 1.53105 28.6624C1.0834 27.7843 0.859572 26.8201 0.859572 25.7698C0.859572 24.7368 1.04896 23.8587 1.42774 23.1356C1.82374 22.3952 2.38331 21.8357 3.10644 21.4569C3.84679 21.0781 4.72487 20.8887 5.7407 20.8887C7.3247 20.8887 8.52991 21.3622 9.35635 22.3092C10.1828 23.2561 10.596 24.6421 10.596 26.4671H7.23861C7.23861 25.503 7.10087 24.8057 6.82539 24.3752C6.54991 23.9448 6.16252 23.7296 5.66322 23.7296C5.25 23.7296 4.91426 23.8673 4.656 24.1428C4.39774 24.4011 4.26861 24.8057 4.26861 25.3566C4.26861 25.8904 4.40635 26.3725 4.68183 26.8029C4.97452 27.2333 5.40496 27.6724 5.97313 28.12L7.85844 29.5663C8.92591 30.3755 9.67487 31.2364 10.1053 32.1489C10.5357 33.0614 10.751 34.0342 10.751 35.0672C10.751 36.634 10.2861 37.8478 9.35635 38.7087C8.44383 39.5696 7.19557 40 5.61157 40Z" fill="#F1F0EF"/>
+<path d="M83.8503 19.1113C82.0769 19.1113 80.734 18.5689 79.8215 17.4842C78.9262 16.3823 78.4785 14.8586 78.4785 12.913H81.9134C81.9134 14.0149 82.1028 14.85 82.4816 15.4182C82.8603 15.9863 83.3683 16.2704 84.0053 16.2704C84.4702 16.2704 84.8489 16.1241 85.1416 15.8314C85.4343 15.5215 85.5807 15.091 85.5807 14.5401C85.5807 14.0408 85.4429 13.5501 85.1675 13.068C84.892 12.5859 84.4443 12.1124 83.8245 11.6476L81.9134 10.2013C80.932 9.44373 80.2175 8.63451 79.7698 7.77364C79.3222 6.89556 79.0983 5.93139 79.0983 4.88113C79.0983 3.84808 79.2877 2.97 79.6665 2.24687C80.0625 1.50652 80.6221 0.946955 81.3452 0.568174C82.0856 0.189391 82.9636 0 83.9795 0C85.5635 0 86.7687 0.473478 87.5951 1.42043C88.4216 2.36739 88.8348 3.75339 88.8348 5.57843H85.4774C85.4774 4.61426 85.3396 3.91695 85.0642 3.48652C84.7887 3.05608 84.4013 2.84087 83.902 2.84087C83.4888 2.84087 83.153 2.97861 82.8948 3.25408C82.6365 3.51234 82.5074 3.91695 82.5074 4.46791C82.5074 5.00165 82.6451 5.48373 82.9206 5.91417C83.2133 6.3446 83.6437 6.78365 84.2119 7.2313L86.0972 8.67756C87.1647 9.48677 87.9136 10.3476 88.3441 11.2602C88.7745 12.1727 88.9897 13.1455 88.9897 14.1785C88.9897 15.7453 88.5249 16.9591 87.5951 17.82C86.6826 18.6809 85.4343 19.1113 83.8503 19.1113Z" fill="#F1F0EF"/>
+<path d="M68.1528 18.853V0.258209H73.2664C74.3683 0.258209 75.2808 0.490644 76.004 0.955513C76.7271 1.42038 77.2694 2.04021 77.631 2.81499C77.9926 3.57255 78.1733 4.4076 78.1733 5.32012C78.1733 6.57699 77.8376 7.61864 77.1661 8.44507C76.5119 9.27151 75.5391 9.86551 74.2478 10.2271L74.506 8.90994C75.7801 9.11655 76.6582 9.55559 77.1403 10.2271C77.6224 10.8986 77.8634 11.7594 77.8634 12.8097V18.853H74.1961V12.9388C74.1961 12.3362 74.0584 11.8885 73.7829 11.5959C73.5074 11.2859 73.12 11.131 72.6207 11.131H70.9937V8.23846H72.7499C73.3008 8.23846 73.7313 8.01464 74.0412 7.56699C74.3511 7.11934 74.506 6.45647 74.506 5.57838C74.506 4.71751 74.3511 4.06325 74.0412 3.6156C73.7313 3.16795 73.3008 2.94412 72.7499 2.94412H71.8201V18.853H68.1528Z" fill="#F1F0EF"/>
+<path d="M58.3408 18.853V0.258209H62.0081V18.853H58.3408ZM60.2003 18.853V16.0121H66.9151V18.853H60.2003ZM60.2003 10.6661V7.8769H66.4502V10.6661H60.2003ZM60.2003 3.09908V0.258209H66.7085V3.09908H60.2003Z" fill="#F1F0EF"/>
+<path d="M47.6682 18.853V16.0121H50.3542C51.1117 16.0121 51.7229 15.7883 52.1878 15.3406C52.6699 14.893 53.0228 14.1871 53.2467 13.2229C53.4705 12.2587 53.5824 11.0019 53.5824 9.45229C53.5824 7.93716 53.4705 6.71473 53.2467 5.78499C53.0228 4.85525 52.6699 4.17516 52.1878 3.74473C51.7229 3.31429 51.1117 3.09908 50.3542 3.09908H47.9782V0.258209H50.3542C51.7832 0.258209 53.0142 0.611166 54.0473 1.31708C55.0975 2.00577 55.8981 3.03882 56.4491 4.41621C57.0173 5.7936 57.3014 7.48951 57.3014 9.50394C57.3014 11.5184 57.0173 13.2229 56.4491 14.6175C55.8809 16.0121 55.0803 17.071 54.0473 17.7941C53.0142 18.5 51.7918 18.853 50.38 18.853H47.6682ZM45.6538 18.853V0.258209H49.3211V18.853H45.6538Z" fill="#F1F0EF"/>
+<path d="M33.2944 18.853V0.258209H37.6332L41.6621 16.1671L40.7582 16.2187V0.258209H44.1156V18.853H39.7768L35.7479 2.94412L36.6518 2.89247V18.853H33.2944Z" fill="#F1F0EF"/>
+<path d="M26.604 19.1112C24.8823 19.1112 23.5738 18.6119 22.6785 17.6133C21.8004 16.5975 21.3613 15.2287 21.3613 13.507V0.258209H25.0286V14.3592C25.0286 14.9791 25.1664 15.4439 25.4418 15.7539C25.7345 16.0638 26.1219 16.2187 26.604 16.2187C27.1033 16.2187 27.4907 16.0638 27.7662 15.7539C28.0417 15.4439 28.1794 14.9791 28.1794 14.3592V0.258209H31.8467V13.507C31.8467 15.2287 31.3991 16.5975 30.5038 17.6133C29.6257 18.6119 28.3258 19.1112 26.604 19.1112Z" fill="#F1F0EF"/>
+<path d="M14.2819 19.1113C13.2833 19.1113 12.3966 18.9047 11.6218 18.4915C10.8642 18.0782 10.2272 17.467 9.71064 16.6578C9.19412 15.8314 8.79812 14.8242 8.52264 13.6362C8.26438 12.4309 8.13525 11.0449 8.13525 9.47817C8.13525 7.41208 8.36769 5.68173 8.83256 4.28713C9.29743 2.8753 9.98612 1.80782 10.8986 1.08469C11.8112 0.361565 12.9303 0 14.256 0C15.6162 0 16.7526 0.361565 17.6651 1.08469C18.5776 1.79061 19.2663 2.84948 19.7312 4.2613C20.196 5.67313 20.4285 7.42069 20.4285 9.50399C20.4285 11.0708 20.2907 12.4568 20.0152 13.662C19.757 14.85 19.3696 15.8486 18.8531 16.6578C18.3366 17.467 17.6909 18.0782 16.9161 18.4915C16.1586 18.9047 15.2805 19.1113 14.2819 19.1113ZM14.256 16.2188C14.8242 16.2188 15.2891 15.9863 15.6506 15.5215C16.0122 15.0394 16.2791 14.299 16.4512 13.3004C16.6234 12.3018 16.7095 11.0191 16.7095 9.45234C16.7095 7.90278 16.6234 6.64591 16.4512 5.68173C16.2791 4.71756 16.0122 4.01165 15.6506 3.564C15.2891 3.11634 14.8242 2.89252 14.256 2.89252C13.7051 2.89252 13.2488 3.11634 12.8873 3.564C12.5257 4.01165 12.2588 4.71756 12.0866 5.68173C11.9317 6.62869 11.8542 7.88556 11.8542 9.45234C11.8542 11.0191 11.9403 12.3018 12.1125 13.3004C12.2846 14.299 12.5429 15.0394 12.8873 15.5215C13.2488 15.9863 13.7051 16.2188 14.256 16.2188Z" fill="#F1F0EF"/>
+<path d="M0 18.853V0.258209H3.6673V18.853H0ZM1.85948 11.4667V8.62586H7.69617V11.4667H1.85948ZM1.85948 3.09908V0.258209H7.95443V3.09908H1.85948Z" fill="#F1F0EF"/>
+</svg>
+      </div>
+      <div class="nav-right">
+        <div class="nav-spacer"></div>
+        <ul class="nav-links">
+          <li><a href="#format">The Format</a></li>
+        </ul>
+        <a href="#cta" class="nav-cta">Request Invitation</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="strip"></div>
+  <section class="hero" id="hero">
+    <canvas id="heroGrid"></canvas>
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        <span class="clip-line"><span><span class="dot">Scale</span></span></span>
+        <span class="clip-line" style="transition-delay:0.08s"><span>Together<span class="dot">.</span></span></span>
+      </h1>
+      <div class="hero-meta">
+        <div class="hero-meta-block">
+          <span class="red">A one-day summit for founders</span><br>
+          scaling on Laravel.
+        </div>
+        <div class="hero-meta-block" style="text-align:right">
+          <span class="red">Austin, TX.</span><br>
+          February 2, 2027
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip"></div>
+
+  <!-- The Format -->
+  <section id="format" class="section-row">
+    <div class="section-left" data-a="left">
+      <div class="section-num" data-a="fade">02.</div>
+      <div class="section-title">
+        <span class="clip-line"><span>The</span></span>
+        <span class="clip-line" style="transition-delay:.07s"><span>Format<span class="dot">.</span></span></span>
+      </div>
+    </div>
+    <div class="section-right">
+      <p class="body-lead" data-a style="transition-delay:.1s">
+        Fifty founders and CTOs running companies on Laravel. Everyone here has shipped at scale, hired past the point where hiring gets hard, and is rewriting a roadmap AI made obsolete. Small enough to remember every name, large enough that the conversation has range.
+      </p>
+      <hr class="format-divider">
+      <div class="body-text" data-stagger style="transition-delay:.15s">
+        <div class="arrow-item">
+          <span class="arrow-label">→ Thirty-minute talks</span>
+          <span class="arrow-body">No tracks, no breakouts. Everyone hears the same thing, so the hallway conversation afterward is the same conversation.</span>
+        </div>
+        <hr class="format-divider">
+        <div class="arrow-item">
+          <span class="arrow-label">→ Cohorts of ten</span>
+          <span class="arrow-body">Meals are seated in groups of ten, rotated through the day. You'll have a real conversation with a meaningful share of the room, not a name-tag exchange with all of it.</span>
+        </div>
+        <hr class="format-divider">
+        <div class="arrow-item">
+          <span class="arrow-label">→ One day, end to end</span>
+          <span class="arrow-body">Breakfast through dinner at the Estate. Arrive the night before, leave the morning after.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip"></div>
+
+  <!-- CTA -->
+  <section id="cta" class="cta-section">
+    <div class="cta-inner">
+      <div class="cta-left" data-a="left">
+        <div class="cta-headline">
+          <span class="clip-line"><span>Ready</span></span>
+          <span class="clip-line" style="transition-delay:.08s"><span>to scale<span class="dot">.</span></span></span>
+        </div>
+        <p class="cta-sub" data-a style="transition-delay:.2s">Applications for Founders Summit 2027 are open. Fifty founders. One day. Austin, Texas.</p>
+      </div>
+      <div class="cta-right" data-a style="transition-delay:.15s">
+        <div>
+          <p class="cta-meta">We'll review your application and respond within two weeks. Spots are limited.</p>
+          <a href="mailto:hello@founderssummit.com" class="btn-red">Request Invitation →</a>
+        </div>
+        <div style="margin-top:40px;border-top:0.5px solid var(--border);padding-top:24px;">
+          <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--border);margin-bottom:8px;">Contact</p>
+          <p style="font-size:13px;font-weight:300;color:var(--muted);">hello@founderssummit.com</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="org-footer">
+    <span class="org-label">Brought to you by</span>
+    <svg width="66" height="17" viewBox="0 0 115 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.51709 0H0V28.5113H13.0015V24.3161H4.51709V0Z" fill="#F53003"/>
+      <path d="M28.9485 12.0969C28.3721 11.1465 27.5541 10.4001 26.4935 9.85677C25.4332 9.31374 24.3658 9.04209 23.2924 9.04209C21.9037 9.04209 20.6341 9.30692 19.482 9.8363C18.3295 10.3657 17.3411 11.0927 16.5162 12.0155C15.6913 12.9389 15.0494 14.0048 14.5915 15.2126C14.1328 16.4212 13.9041 17.6911 13.9041 19.0212C13.9041 20.3792 14.1328 21.6553 14.5915 22.8497C15.0494 24.045 15.6913 25.104 16.5162 26.0268C17.3411 26.9502 18.3292 27.6764 19.482 28.2058C20.6339 28.7352 21.9037 29 23.2924 29C24.3658 29 25.4332 28.7283 26.4935 28.1856C27.5541 27.6428 28.3724 26.8961 28.9485 25.9455V28.5116H33.2299V9.53107H28.9485V12.0969ZM28.5559 21.3426C28.2939 22.076 27.9274 22.714 27.4561 23.2571C26.9846 23.8004 26.4151 24.2347 25.7473 24.5604C25.0794 24.8864 24.3392 25.0491 23.5278 25.0491C22.7158 25.0491 21.9825 24.8864 21.3279 24.5604C20.6731 24.2345 20.1105 23.8004 19.6392 23.2571C19.1676 22.714 18.8074 22.076 18.5589 21.3426C18.3095 20.6096 18.1858 19.8356 18.1858 19.0212C18.1858 18.2065 18.3095 17.4325 18.5589 16.6994C18.8071 15.9664 19.1676 15.3286 19.6392 14.7853C20.1105 14.2426 20.6734 13.8076 21.3279 13.4819C21.9825 13.1559 22.7158 12.9932 23.5278 12.9932C24.3392 12.9932 25.0794 13.1559 25.7473 13.4819C26.4151 13.8079 26.9846 14.2426 27.4561 14.7853C27.9274 15.3286 28.2939 15.9664 28.5559 16.6994C28.8174 17.4325 28.9488 18.2065 28.9488 19.0212C28.9485 19.8356 28.8174 20.6096 28.5559 21.3426Z" fill="#F53003"/>
+      <path d="M63.7506 12.0969C63.1742 11.1465 62.3562 10.4001 61.2956 9.85677C60.2353 9.31374 59.1679 9.04209 58.0945 9.04209C56.7058 9.04209 55.4362 9.30692 54.2841 9.8363C53.1316 10.3657 52.1432 11.0927 51.3183 12.0155C50.4934 12.9389 49.8515 14.0048 49.3936 15.2126C48.9349 16.4212 48.7061 17.6911 48.7061 19.0212C48.7061 20.3792 48.9349 21.6553 49.3936 22.8497C49.8515 24.045 50.4934 25.104 51.3183 26.0268C52.1432 26.9502 53.1313 27.6764 54.2841 28.2058C55.436 28.7352 56.7058 29 58.0945 29C59.1679 29 60.2353 28.7283 61.2956 28.1856C62.3562 27.6428 63.1745 26.8961 63.7506 25.9455V28.5116H68.032V9.53107H63.7506V12.0969ZM63.3577 21.3426C63.0958 22.076 62.7292 22.714 62.2579 23.2571C61.7864 23.8004 61.2169 24.2347 60.5492 24.5604C59.8812 24.8864 59.141 25.0491 58.3296 25.0491C57.5176 25.0491 56.7843 24.8864 56.1297 24.5604C55.4749 24.2345 54.9123 23.8004 54.441 23.2571C53.9694 22.714 53.6092 22.076 53.3607 21.3426C53.1113 20.6096 52.9876 19.8356 52.9876 19.0212C52.9876 18.2065 53.1113 17.4325 53.3607 16.6994C53.6089 15.9664 53.9694 15.3286 54.441 14.7853C54.9123 14.2426 55.4752 13.8076 56.1297 13.4819C56.7843 13.1559 57.5176 12.9932 58.3296 12.9932C59.141 12.9932 59.8812 13.1559 60.5492 13.4819C61.2169 13.8079 61.7864 14.2426 62.2579 14.7853C62.7292 15.3286 63.0958 15.9664 63.3577 16.6994C63.6192 17.4325 63.7506 18.2065 63.7506 19.0212C63.7506 19.8356 63.6192 20.6096 63.3577 21.3426Z" fill="#F53003"/>
+      <path d="M115 0H110.719V28.5113H115V0Z" fill="#F53003"/>
+      <path d="M36.6083 28.5113H40.8897V13.8992H48.2351V9.53108H36.6083V28.5113Z" fill="#F53003"/>
+      <path d="M85.1973 9.53108L79.816 24.0658L74.4348 9.53108H70.0983L77.1257 28.5113H82.5064L89.5339 9.53108H85.1973Z" fill="#F53003"/>
+      <path d="M98.8717 9.04294C93.6287 9.04294 89.479 13.5107 89.479 19.0215C89.479 25.1134 93.4954 29 99.4203 29C102.736 29 104.854 27.6852 107.44 24.8219L104.548 22.5013C104.546 22.5035 102.364 25.4736 99.1071 25.4736C95.3208 25.4736 93.7269 22.3084 93.7269 20.6708H107.931C108.677 14.4004 104.701 9.04294 98.8717 9.04294ZM93.7382 17.3719C93.7711 17.0066 94.2641 12.5691 98.8377 12.5691C103.411 12.5691 103.967 17.0061 103.999 17.3719H93.7382Z" fill="#F53003"/>
+    </svg>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Hero grid canvas ─────────────────────────────────────────────────────
+(function () {
+  const canvas = document.getElementById('heroGrid');
+  const hero   = canvas.parentElement;
+  const ctx    = canvas.getContext('2d');
+
+  const CELL     = 12;
+  const SPOT_R   = 8;
+  const BLINK_MS = 90;
+  const MAX_BLINKS = 3;
+
+  let cols = 0, rows = 0;
+  let curC = -99, curR = -99;
+  let inside = false;
+
+  const blinks = new Map();
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const w   = hero.offsetWidth;
+    const h   = hero.offsetHeight;
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(w / CELL) + 1;
+    rows = Math.ceil(h / CELL) + 1;
+  }
+
+  window.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    curC = (e.clientX - r.left) / CELL;
+    curR = (e.clientY - r.top)  / CELL;
+    inside = e.clientX >= r.left && e.clientX <= r.right
+          && e.clientY >= r.top  && e.clientY <= r.bottom;
+  });
+  hero.addEventListener('mouseleave', () => { inside = false; });
+
+  setInterval(() => {
+    if (!inside) return;
+    const n = 1 + Math.floor(Math.random() * MAX_BLINKS);
+    for (let i = 0; i < n; i++) {
+      const a  = Math.random() * Math.PI * 2;
+      const d  = 0.5 + Math.random() * (SPOT_R * 0.9);
+      const bc = Math.round(curC + Math.cos(a) * d);
+      const br = Math.round(curR + Math.sin(a) * d);
+      if (bc < 0 || br < 0 || bc >= cols || br >= rows) continue;
+      const key = bc + ',' + br;
+      const prev = blinks.get(key);
+      const op = 0.55 + Math.random() * 0.4;
+      if (!prev || op > prev.op) {
+        blinks.set(key, { op, decay: 0.016 + Math.random() * 0.018 });
+      }
+    }
+  }, BLINK_MS);
+
+  function draw() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
+    ctx.clearRect(0, 0, W, H);
+
+    const t = performance.now();
+
+    for (const [k, b] of blinks) {
+      b.op -= b.decay;
+      if (b.op <= 0) blinks.delete(k);
+    }
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = c * CELL;
+        const y = r * CELL;
+
+        const dx = c - curC, dy = r - curR;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const prox = inside ? Math.max(0, 1 - dist / SPOT_R) : 0;
+
+        const blinkOp = blinks.get(c + ',' + r)?.op ?? 0;
+
+        const centerC = (cols - 1) * 0.5;
+        const centerR = (rows - 1) * 0.5;
+        const d = Math.sqrt((c - centerC) ** 2 + (r - centerR) ** 2);
+        const wave = Math.sin(2 * Math.PI * (d * 0.045 - t * 0.00056));
+        const dissipate = Math.max(0, 1 - d / (Math.max(cols, rows) * 0.75));
+
+        if (blinkOp > 0.01) {
+          ctx.fillStyle = `rgba(245,48,3,${blinkOp.toFixed(3)})`;
+          ctx.fillRect(x - 1, y - 1, 3, 3);
+        } else {
+          const alpha = Math.max(0.06, 0.18 + wave * 0.14 * dissipate + prox * 0.22);
+          ctx.fillStyle = `rgba(241,240,239,${alpha.toFixed(3)})`;
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ── Cursor ───────────────────────────────────────────────────────────────
+const dot = document.getElementById('cDot');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX + 'px';
+  dot.style.top  = e.clientY + 'px';
+});
+
+// ── Scroll animations ────────────────────────────────────────────────────
+(function() {
+  const STAGGER_STEP = 72;
+
+  function activate(el) {
+    el.classList.add('in');
+    if (el.hasAttribute('data-stagger')) {
+      const baseDelay = parseFloat(el.style.transitionDelay || '0') * 1000;
+      Array.from(el.children).forEach((child, i) => {
+        child.style.transitionDelay = (baseDelay + i * STAGGER_STEP) + 'ms';
+      });
+    }
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      activate(e.target);
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+
+  document.querySelectorAll('.clip-line, [data-a], [data-stagger]').forEach(el => {
+    io.observe(el);
+  });
+
+  document.querySelectorAll('#hero .clip-line, #hero [data-a]').forEach(el => {
+    setTimeout(() => activate(el), 80);
+  });
+})();
+
+// Active nav
+const secs = document.querySelectorAll('section[id]');
+const navAs = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  navAs.forEach(a => { a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--red)' : ''; });
+}, { passive: true });
+</script>
+</body>
+</html>
