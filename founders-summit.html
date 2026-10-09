@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founders Summit 2027 — By Laravel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: #09060a;
+      cursor: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Hero wrapper ─────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 600px;
+      overflow: hidden;
+    }
+
+    /* ─── Background layers ────────────────────────────────────────────────── */
+    #bg {
+      position: absolute;
+      /* Extra bleed so parallax movement doesn't expose edges */
+      inset: -60px;
+      will-change: transform;
+      transition: transform 0.08s linear;
+    }
+
+    /*
+      Base image: a dark, nearly-monochrome scene.
+      Swap `background` for background-image: url('/your-photo.jpg');
+      and add background-size: cover; background-position: center;
+      when you have the real event photo.
+    */
+    #bg-base {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 60% at 66% 28%, rgba(28,12,4,0.92) 0%, transparent 100%),
+        radial-gradient(ellipse 75% 65% at 18% 78%, rgba(10,6,20,0.85) 0%, transparent 100%),
+        linear-gradient(155deg, #0e0c11 0%, #080507 45%, #0d0a05 100%);
+    }
+
+    /* Film grain overlay */
+    #bg-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.45;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    /* Vignette */
+    #bg-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 35%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+    }
+
+    /* ─── Canvas (spotlight layer) ─────────────────────────────────────────── */
+    #spotlight-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ─── UI layer ─────────────────────────────────────────────────────────── */
+    #ui {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      will-change: transform;
+      transition: transform 0.08s linear;
+    }
+
+    /* ─── Nav ──────────────────────────────────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 52px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      color: rgba(245,240,234,0.92);
+      text-decoration: none;
+    }
+
+    .nav-logo-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-logo-year {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      opacity: 0.4;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245,240,234,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: rgba(245,240,234,0.88); }
+
+    .nav-cta {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245,240,234,0.85);
+      text-decoration: none;
+      padding: 9px 22px;
+      border: 1px solid rgba(245,240,234,0.18);
+      border-radius: 2px;
+      transition: border-color 0.22s, background 0.22s;
+    }
+
+    .nav-cta:hover {
+      border-color: rgba(245,240,234,0.45);
+      background: rgba(245,240,234,0.04);
+    }
+
+    /* ─── Content grid ─────────────────────────────────────────────────────── */
+    #content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: flex-end;
+      padding: 0 52px 68px;
+      gap: 52px;
+    }
+
+    /* Left column — event identity */
+    #left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(44px, 5.8vw, 88px);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.015em;
+      color: rgba(245,240,234,0.95);
+      margin: 0 0 14px;
+    }
+
+    .event-name em {
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .by-laravel {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,234,0.3);
+    }
+
+    /* Right column — headline + body */
+    #right {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(48px, 7vw, 104px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.92;
+      letter-spacing: -0.025em;
+      color: rgba(245,240,234,0.94);
+      margin: 0;
+    }
+
+    .desc {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(245,240,234,0.4);
+      max-width: 460px;
+    }
+
+    /* Meta row */
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .meta-dot {
+      width: 7px;
+      height: 7px;
+      background: #f53003;
+      flex-shrink: 0;
+    }
+
+    .meta-text {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,240,234,0.45);
+    }
+
+    /* ─── Custom cursor ────────────────────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform;
+      /* JS sets: translate(x px, y px) via transform */
+    }
+
+    /* Outer ring */
+    .cursor-ring {
+      position: absolute;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.72);
+      transform: translate(-50%, -50%);
+    }
+
+    /* Four crosshair arms extending beyond the ring */
+    .arm {
+      position: absolute;
+      background: rgba(255,255,255,0.72);
+      transform: translate(-50%, -50%);
+    }
+    .arm-t { width: 1px; height: 10px; top: calc(50% - 30px); left: 50%; }
+    .arm-b { width: 1px; height: 10px; top: calc(50% + 30px); left: 50%; }
+    .arm-l { height: 1px; width: 10px; left: calc(50% - 30px); top: 50%; }
+    .arm-r { height: 1px; width: 10px; left: calc(50% + 30px); top: 50%; }
+
+    /* Tiny centre dot */
+    .cursor-dot {
+      position: absolute;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+
+<section id="hero">
+
+  <!-- Background -->
+  <div id="bg">
+    <div id="bg-base"></div>
+    <div id="bg-grain"></div>
+    <div id="bg-vignette"></div>
+  </div>
+
+  <!-- Spotlight canvas -->
+  <canvas id="spotlight-canvas"></canvas>
+
+  <!-- UI -->
+  <div id="ui">
+    <nav>
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-name">Founders Summit</span>
+        <span class="nav-logo-year">2027</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#agenda">Agenda</a>
+        <a href="#speakers">Speakers</a>
+      </div>
+
+      <a href="#invite" class="nav-cta">Request Invite</a>
+    </nav>
+
+    <div id="content">
+      <div id="left">
+        <h1 class="event-name">
+          Founders<br><em>Summit</em>
+        </h1>
+        <p class="by-laravel">By Laravel</p>
+      </div>
+
+      <div id="right">
+        <h2 class="headline">Scale&nbsp;together.</h2>
+        <p class="desc">
+          A day for founders who've chosen Laravel to meet, share, and
+          accelerate their path to the next stage. Focused conversations,
+          shared learning, and the people building alongside you.
+        </p>
+        <div class="meta">
+          <div class="meta-item">
+            <div class="meta-dot"></div>
+            <span class="meta-text">November 2027</span>
+          </div>
+          <div class="meta-item">
+            <div class="meta-dot"></div>
+            <span class="meta-text">One day only</span>
+          </div>
+          <div class="meta-item">
+            <div class="meta-dot"></div>
+            <span class="meta-text">Shared upon approval</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div id="cursor">
+    <div class="cursor-ring"></div>
+    <div class="arm arm-t"></div>
+    <div class="arm arm-b"></div>
+    <div class="arm arm-l"></div>
+    <div class="arm arm-r"></div>
+    <div class="cursor-dot"></div>
+  </div>
+</section>
+
+<script>
+  // ─── Constants ─────────────────────────────────────────────────────────────
+  const SPOTLIGHT_R  = 210;   // spotlight radius (px)
+  const LERP         = 0.088; // spotlight tracking speed (0–1)
+  const ECHO_THRESH  = 0.55;  // cursor speed (px/ms) to spawn echo rings
+  const ECHO_EXPAND  = 2.4;   // px per frame each ring expands
+  const ECHO_FADE    = 0.920; // opacity decay per frame
+  const PAR_BG       = 30;    // max background parallax shift (px)
+  const PAR_TEXT     = -15;   // max text parallax shift (px — opposite dir)
+
+  // ─── State ─────────────────────────────────────────────────────────────────
+  const mouse   = { x: -9999, y: -9999, inside: false };
+  const lerped  = { x: 0, y: 0 };
+  const prev    = { x: 0, y: 0, t: 0 };
+  let   echoes  = [];     // { x, y, r, opacity }
+
+  // ─── Elements ──────────────────────────────────────────────────────────────
+  const canvas  = document.getElementById('spotlight-canvas');
+  const ctx     = canvas.getContext('2d');
+  const bg      = document.getElementById('bg');
+  const ui      = document.getElementById('ui');
+  const cursor  = document.getElementById('cursor');
+
+  // Offscreen canvas for compositing the spotlight
+  const off     = document.createElement('canvas');
+  const offCtx  = off.getContext('2d');
+
+  // Alt scene canvas — painted once, reused every frame
+  // Represents the "colour / warm" version revealed in spotlight
+  // Replace with drawImage(realPhoto) when you have actual images
+  const alt     = document.createElement('canvas');
+  const altCtx  = alt.getContext('2d');
+
+  // ─── Paint the alt ("warm") scene ──────────────────────────────────────────
+  function paintAlt(w, h) {
+    altCtx.clearRect(0, 0, w, h);
+
+    // Warm dark base
+    const base = altCtx.createLinearGradient(0, 0, w, h);
+    base.addColorStop(0,    '#1d0d07');
+    base.addColorStop(0.5,  '#100805');
+    base.addColorStop(1,    '#0b070d');
+    altCtx.fillStyle = base;
+    altCtx.fillRect(0, 0, w, h);
+
+    // Amber stage light — upper right
+    const l1 = altCtx.createRadialGradient(w * 0.65, h * 0.25, 0, w * 0.65, h * 0.25, h * 0.72);
+    l1.addColorStop(0,    'rgba(215, 110, 28, 0.58)');
+    l1.addColorStop(0.4,  'rgba(155, 65, 12, 0.22)');
+    l1.addColorStop(1,    'rgba(0,0,0,0)');
+    altCtx.fillStyle = l1;
+    altCtx.fillRect(0, 0, w, h);
+
+    // Warm fill — lower left
+    const l2 = altCtx.createRadialGradient(w * 0.15, h * 0.8, 0, w * 0.15, h * 0.8, h * 0.5);
+    l2.addColorStop(0,  'rgba(100, 52, 18, 0.38)');
+    l2.addColorStop(1,  'rgba(0,0,0,0)');
+    altCtx.fillStyle = l2;
+    altCtx.fillRect(0, 0, w, h);
+
+    // Red accent (Laravel brand) — far right
+    const l3 = altCtx.createRadialGradient(w * 0.9, h * 0.5, 0, w * 0.9, h * 0.5, h * 0.35);
+    l3.addColorStop(0,  'rgba(200, 50, 8, 0.2)');
+    l3.addColorStop(1,  'rgba(0,0,0,0)');
+    altCtx.fillStyle = l3;
+    altCtx.fillRect(0, 0, w, h);
+
+    // Film grain
+    const img  = altCtx.getImageData(0, 0, w, h);
+    const d    = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const n = (Math.random() - 0.5) * 22;
+      d[i]     = Math.max(0, Math.min(255, d[i]     + n));
+      d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n * 0.82));
+      d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n * 0.68));
+    }
+    altCtx.putImageData(img, 0, 0);
+  }
+
+  // ─── Resize ────────────────────────────────────────────────────────────────
+  function resize() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width  = w;  canvas.height  = h;
+    off.width     = w;  off.height     = h;
+    alt.width     = w;  alt.height     = h;
+    lerped.x = w / 2;
+    lerped.y = h / 2;
+    mouse.x  = w / 2;
+    mouse.y  = h / 2;
+    paintAlt(w, h);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ─── Lerp helper ───────────────────────────────────────────────────────────
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  // ─── Draw loop ─────────────────────────────────────────────────────────────
+  function draw() {
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Advance lerped spotlight position
+    lerped.x = lerp(lerped.x, mouse.x, LERP);
+    lerped.y = lerp(lerped.y, mouse.y, LERP);
+
+    ctx.clearRect(0, 0, w, h);
+
+    // ── Ghost echo rings ────────────────────────────────────────────────────
+    for (let i = echoes.length - 1; i >= 0; i--) {
+      const e = echoes[i];
+      ctx.save();
+      ctx.globalAlpha   = e.opacity;
+      ctx.strokeStyle   = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth     = 1;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+      e.r       += ECHO_EXPAND;
+      e.opacity *= ECHO_FADE;
+      if (e.opacity < 0.008) echoes.splice(i, 1);
+    }
+
+    // ── Spotlight ───────────────────────────────────────────────────────────
+    if (mouse.inside) {
+      const lx = lerped.x;
+      const ly = lerped.y;
+
+      // 1. Offscreen: draw soft-edge spotlight shape as mask
+      offCtx.clearRect(0, 0, w, h);
+
+      const softStart = SPOTLIGHT_R * 0.65;
+      const grad = offCtx.createRadialGradient(lx, ly, softStart, lx, ly, SPOTLIGHT_R);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+
+      offCtx.beginPath();
+      offCtx.arc(lx, ly, SPOTLIGHT_R, 0, Math.PI * 2);
+      offCtx.fillStyle = grad;
+      offCtx.fill();
+
+      // 2. source-in: only draw alt image where mask exists
+      offCtx.globalCompositeOperation = 'source-in';
+      offCtx.drawImage(alt, 0, 0);
+      offCtx.globalCompositeOperation = 'source-over';
+
+      // 3. Composite result onto main canvas
+      ctx.drawImage(off, 0, 0);
+
+      // 4. Thin ring at spotlight boundary
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.lineWidth   = 1;
+      ctx.beginPath();
+      ctx.arc(lx, ly, SPOTLIGHT_R, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // ── Parallax ──────────────────────────────────────────────────────────
+      const nx = (mouse.x / w) - 0.5;
+      const ny = (mouse.y / h) - 0.5;
+      bg.style.transform = `translate(${-nx * PAR_BG}px, ${-ny * PAR_BG}px)`;
+      ui.style.transform = `translate(${-nx * PAR_TEXT}px, ${-ny * PAR_TEXT}px)`;
+    }
+
+    // ── Cursor position ──────────────────────────────────────────────────────
+    cursor.style.transform = `translate(${lerped.x}px, ${lerped.y}px)`;
+    cursor.style.opacity   = mouse.inside ? '1' : '0';
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  // ─── Mouse events ───────────────────────────────────────────────────────────
+  window.addEventListener('mousemove', (e) => {
+    const now = performance.now();
+    const dx  = e.clientX - prev.x;
+    const dy  = e.clientY - prev.y;
+    const dt  = Math.max(now - prev.t, 1);
+    const spd = Math.sqrt(dx * dx + dy * dy) / dt; // px/ms
+
+    mouse.x      = e.clientX;
+    mouse.y      = e.clientY;
+    mouse.inside = true;
+
+    // Spawn echo ring when cursor moves fast enough
+    if (spd > ECHO_THRESH) {
+      echoes.push({
+        x:       lerped.x,
+        y:       lerped.y,
+        r:       SPOTLIGHT_R * 0.68,
+        opacity: Math.min(spd * 0.38, 0.6),
+      });
+    }
+
+    prev.x = e.clientX;
+    prev.y = e.clientY;
+    prev.t = now;
+  });
+
+  window.addEventListener('mouseleave', () => {
+    mouse.inside           = false;
+    bg.style.transform     = '';
+    ui.style.transform     = '';
+  });
+</script>
+</body>
+</html>
