@@ -932,7 +932,7 @@ section, footer { background: transparent; }
      bar-widen pulse sweeps left→right via sequential CSS animation delays.        */
   function drawHeroLines(el, fill) {
     const N      = 65;
-    const LINE_H = 328;
+    const LINE_H = 100;
     const MIN_LW = 0.68;   /* thinnest bar (px) — matches Figma */
     const MAX_LW = 21.79;  /* thickest bar (px) — matches Figma */
     const PERIOD = 5;      /* animation cycle duration (s) */
@@ -963,7 +963,7 @@ section, footer { background: transparent; }
       r.setAttribute('height', LINE_H);
       r.setAttribute('fill',   fill);
       r.style.transformBox    = 'fill-box';
-      r.style.transformOrigin = '50% 100%';
+      r.style.transformOrigin = '50% 50%';
 
       if (lw > MIN_LW) {
         r.style.setProperty('--s-thin', (MIN_LW / lw).toFixed(4));
