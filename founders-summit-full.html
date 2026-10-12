@@ -244,11 +244,6 @@ img { display: block; }
   width: calc(40px * (268.113 / 80.995)); /* ≈ 132px */
 }
 
-/* Footer logo is larger */
-.logo-wrap-lg {
-  height: 65px;
-  width: calc(65px * (268.113 / 80.995)); /* ≈ 215px */
-}
 
 .logo-variant {
   position: absolute;
@@ -481,13 +476,19 @@ section, footer { background: transparent; }
 
 /* ── FOOTER ────────────────────────────────────────────────────────────────── */
 .site-footer {
-  padding: 64px var(--margin);
+  padding: 32px var(--margin);
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  background-color: #000;
 }
-.footer-meta { display: flex; gap: 64px; align-items: flex-end; }
-.footer-meta-item { display: flex; flex-direction: column; gap: 8px; }
+.logo-wrap-lg {
+  height: 32px;
+  width: calc(32px * (268.113 / 80.995));
+}
+.footer-meta { display: flex; gap: 32px; align-items: flex-end; }
+.footer-meta-item { display: flex; flex-direction: column; gap: 4px; }
+.site-footer .label-meta { font-size: 14px; line-height: 1.4; }
 
 /* ── Scroll reveal ─────────────────────────────────────────────────────────── */
 .scroll-reveal {
@@ -865,7 +866,7 @@ section, footer { background: transparent; }
       <span class="label-meta">Commodore Perry Estate, Austin</span>
     </div>
     <img src="https://www.figma.com/api/mcp/asset/81276505-d058-46a5-be86-809068e85f46/83af0.svg"
-         alt="Laravel" style="height:22px;align-self:flex-end">
+         alt="Laravel" style="height:11px;align-self:flex-end">
   </div>
 </footer>
 
