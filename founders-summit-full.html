@@ -857,16 +857,8 @@ section, footer { background: transparent; }
     </div>
   </a>
   <div class="footer-meta">
-    <div class="footer-meta-item">
-      <span class="label-eyebrow">When</span>
-      <span class="label-meta">February 2–4, 2027</span>
-    </div>
-    <div class="footer-meta-item">
-      <span class="label-eyebrow">Where</span>
-      <span class="label-meta">Commodore Perry Estate, Austin</span>
-    </div>
     <img src="https://www.figma.com/api/mcp/asset/81276505-d058-46a5-be86-809068e85f46/83af0.svg"
-         alt="Laravel" style="height:11px;align-self:flex-end">
+         alt="Laravel" style="height:18px;align-self:center">
   </div>
 </footer>
 
@@ -936,22 +928,15 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: thin→thick left-to-right, piano-wave idle + grow on hover */
+  /* Hero: thin→thick left-to-right, sine wave traveling left→right + hover */
   function drawHeroLines(el, fill) {
-    const N          = 95;    /* lines across full width — tight spacing */
-    const LINE_H     = 320;   /* SVG canvas height (max line height) px */
-    const REST       = 0.42;  /* resting scaleY (~134px tall) */
-    const MIN_LW     = 1;     /* leftmost line width px */
-    const MAX_LW     = 7;     /* rightmost line width px */
-
-    /* wave */
-    const WAVE_SPEED = 0.16;  /* fraction of width per second (~6s full sweep) */
-    const WAVE_RISE  = 80;    /* px — sharp leading edge */
-    const WAVE_FALL  = 180;   /* px — gradual trailing fall */
-    const WAVE_PEAK  = 0.58;  /* lift above REST (REST + PEAK = 1.0 at crest) */
-
-    /* hover */
-    const HOVER_R    = 280;   /* px influence radius */
+    const N       = 95;    /* lines across full width */
+    const LINE_H  = 320;   /* SVG canvas height px */
+    const REST    = 0.42;  /* resting scaleY */
+    const MIN_LW  = 1;
+    const MAX_LW  = 7;
+    const PERIOD  = 5;     /* seconds per full left→right sweep */
+    const HOVER_R = 280;
 
     const elW = el.offsetWidth || 1440;
     const GAP = elW / N;
@@ -967,62 +952,46 @@ section, footer { background: transparent; }
 
     const lines = [];
     for (let i = 0; i < N; i++) {
-      const t  = i / (N - 1);
-      const lw = MIN_LW + t * (MAX_LW - MIN_LW);
-      const cx = GAP * i + GAP / 2;
-      const r  = document.createElementNS(NS, 'rect');
+      const t   = i / (N - 1);
+      const lw  = MIN_LW + t * (MAX_LW - MIN_LW);
+      const cx  = GAP * i + GAP / 2;
+      const r   = document.createElementNS(NS, 'rect');
       r.setAttribute('x',      (cx - lw / 2).toFixed(2));
       r.setAttribute('y',      '0');
       r.setAttribute('width',  lw.toFixed(2));
       r.setAttribute('height', LINE_H);
       r.setAttribute('fill',   fill);
       r.style.transformBox    = 'fill-box';
-      r.style.transformOrigin = '50% 100%'; /* grow up from bottom */
+      r.style.transformOrigin = '50% 100%';
       r.style.transform       = `scaleY(${REST})`;
       svg.appendChild(r);
-      lines.push({ r, cx, hScale: REST }); /* hScale = lerped hover scale */
+      /* phase: 0 at left, 2π at right — wave travels left→right */
+      lines.push({ r, cx, hScale: REST, phase: t * Math.PI * 2 });
     }
 
     el.appendChild(svg);
 
-    /* track mouse */
     let mouseX = -9999;
     el.addEventListener('mousemove', e => {
       mouseX = e.clientX - el.getBoundingClientRect().left;
     });
     el.addEventListener('mouseleave', () => { mouseX = -9999; });
 
-    /* rAF loop — drives both wave and hover */
-    let wavePhase = 0;
-    let lastTs    = null;
-
     function tick(ts) {
-      if (!lastTs) lastTs = ts;
-      const dt = Math.min((ts - lastTs) / 1000, 0.05);
-      lastTs = ts;
-
-      wavePhase = (wavePhase + WAVE_SPEED * dt) % 1.0;
-      const waveX = wavePhase * elW;
+      const t = ts / 1000;
 
       lines.forEach(line => {
-        /* ── wave influence (asymmetric: sharp rise, slow fall) ── */
-        const dx = line.cx - waveX;
-        let wv = 0;
-        if (dx >= -WAVE_RISE && dx <= WAVE_FALL) {
-          wv = dx <= 0
-            ? (dx + WAVE_RISE) / WAVE_RISE              /* linear rise  */
-            : Math.cos((dx / WAVE_FALL) * Math.PI * 0.5); /* cosine fall  */
-          wv = Math.max(0, Math.min(1, wv));
-        }
-        const waveScale = REST + wv * WAVE_PEAK;
+        /* sine wave traveling left→right; cube to sharpen peaks like barcode */
+        const raw    = Math.sin(t * (2 * Math.PI / PERIOD) - line.phase);
+        const peaked = Math.pow((raw + 1) / 2, 3);
+        const waveScale = REST + peaked * (1 - REST);
 
-        /* ── hover influence (lerped smooth) ── */
+        /* hover — smooth lerp */
         const hd = Math.abs(line.cx - mouseX);
         const ht = Math.max(0, 1 - hd / HOVER_R);
         line.hScale += ((REST + ht * (1 - REST)) - line.hScale) * 0.14;
 
-        const finalScale = Math.max(waveScale, line.hScale);
-        line.r.style.transform = `scaleY(${finalScale.toFixed(3)})`;
+        line.r.style.transform = `scaleY(${Math.max(waveScale, line.hScale).toFixed(3)})`;
       });
 
       requestAnimationFrame(tick);
