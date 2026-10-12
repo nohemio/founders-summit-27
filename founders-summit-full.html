@@ -1061,9 +1061,48 @@ section, footer { background: transparent; }
     });
   }
 
+  function drawAccordionRow(el, fill) {
+    const ROW_H  = 136;
+    const GAP    = 26;
+    const PERIOD = 3.5;
+    const SWEEP  = 1.4;
+
+    const THICK_THIN = [[18,4],[12,7],[8,7],[5,7],[3,6],[2,7],[1,18]];
+    const widths = THICK_THIN.flatMap(([w, n]) => Array(n).fill(w));
+    const N = widths.length; /* 56 */
+
+    const elW = el.offsetWidth || 1440;
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${elW} ${ROW_H}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    Object.assign(svg.style, {
+      position: 'absolute', bottom: '0', left: '0',
+      width: '100%', height: ROW_H + 'px',
+      pointerEvents: 'none',
+    });
+
+    widths.forEach((lw, i) => {
+      const cx    = GAP * i + GAP / 2;
+      const t     = i / (N - 1);
+      const r     = document.createElementNS(NS, 'rect');
+      r.setAttribute('x',      (cx - lw / 2).toFixed(2));
+      r.setAttribute('y',      '0');
+      r.setAttribute('width',  lw.toFixed(2));
+      r.setAttribute('height', ROW_H);
+      r.setAttribute('fill',   fill);
+      r.style.transformBox    = 'fill-box';
+      r.style.transformOrigin = '50% 50%';
+      const delay = -(PERIOD / 2) + t * SWEEP;
+      r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
+      svg.appendChild(r);
+    });
+
+    el.appendChild(svg);
+  }
+
   drawHeroLines(document.getElementById('hero-lines-section'), 'rgba(200,199,193,0.35)');
-  drawBarcodes(document.getElementById('stats-section'), 'rgba(200,199,193,0.35)');
-  drawBarcodes(document.getElementById('faq-section'),   'rgba(200,199,193,0.35)');
+  drawAccordionRow(document.getElementById('stats-section'),   'rgba(200,199,193,0.35)');
+  drawBarcodes(document.getElementById('faq-section'),         'rgba(200,199,193,0.35)');
 })();
 
 /* ── SCROLL REVEAL ─────────────────────────────────────────────────────────── */
