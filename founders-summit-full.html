@@ -242,19 +242,12 @@ img { display: block; }
   /* maintain Figma aspect ratio */
   height: 40px;
   width: calc(40px * (268.113 / 80.995)); /* ≈ 132px */
-  overflow: hidden;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Text logo-parts fade out as the mark clips in */
-.logo-variant .logo-part:not(:first-child) {
-  transition: opacity 0.3s ease;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              width  0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .site-header.is-scrolled .logo-wrap {
-  width: 38px; /* just the logomark */
-}
-.site-header.is-scrolled .logo-variant .logo-part:not(:first-child) {
-  opacity: 0;
+  height: 30px;
+  width: calc(30px * (268.113 / 80.995)); /* ≈ 99px */
 }
 
 /* Footer logo is larger */
@@ -292,6 +285,11 @@ html[data-theme="light"] .logo-ink   { opacity: 1; }
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-header.is-scrolled {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .header-right { display: flex; align-items: center; gap: 12px; }
 .header-badge { display: flex; align-items: center; gap: 10px; margin-right: 8px; }
