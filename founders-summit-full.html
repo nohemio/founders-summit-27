@@ -945,31 +945,29 @@ section, footer { background: transparent; }
     const N      = 65;
     const MIN_LW = 0.68;
     const MAX_LW = 21.79;
-    const H      = el.offsetHeight || 400;
-    const elW    = el.offsetWidth  || 1440;
+    const ROW_H  = 400;
+    const elW    = el.offsetWidth || 1440;
     const GAP    = elW / N;
-
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${elW} ${H}`);
-    svg.setAttribute('preserveAspectRatio', 'none');
-    Object.assign(svg.style, {
-      position: 'absolute', top: '0', left: '0',
-      width: '100%', height: '100%',
-      pointerEvents: 'none',
-    });
-
     const PERIOD = 3.5;
     const SWEEP  = 1.4;
 
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${elW} ${ROW_H}`);
+    Object.assign(svg.style, {
+      position: 'absolute', bottom: '0', left: '0',
+      width: '100%', height: ROW_H + 'px',
+      pointerEvents: 'none',
+    });
+
     for (let i = 0; i < N; i++) {
       const t  = i / (N - 1);
-      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t); /* exponential thin→thick */
+      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t);
       const cx = GAP * i + GAP / 2;
       const r  = document.createElementNS(NS, 'rect');
       r.setAttribute('x',      (cx - lw / 2).toFixed(2));
       r.setAttribute('y',      '0');
       r.setAttribute('width',  lw.toFixed(2));
-      r.setAttribute('height', H);
+      r.setAttribute('height', ROW_H);
       r.setAttribute('fill',   fill);
       r.style.transformBox    = 'fill-box';
       r.style.transformOrigin = '50% 50%';
