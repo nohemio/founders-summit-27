@@ -242,12 +242,6 @@ img { display: block; }
   /* maintain Figma aspect ratio */
   height: 40px;
   width: calc(40px * (268.113 / 80.995)); /* ≈ 132px */
-  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              width  0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.site-header.is-scrolled .logo-wrap {
-  height: 30px;
-  width: calc(30px * (268.113 / 80.995)); /* ≈ 99px */
 }
 
 /* Footer logo is larger */
@@ -285,11 +279,6 @@ html[data-theme="light"] .logo-ink   { opacity: 1; }
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.site-header.is-scrolled {
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 .header-right { display: flex; align-items: center; gap: 12px; }
 .header-badge { display: flex; align-items: center; gap: 10px; margin-right: 8px; }
@@ -499,6 +488,21 @@ section, footer { background: transparent; }
 }
 .footer-meta { display: flex; gap: 64px; align-items: flex-end; }
 .footer-meta-item { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Scroll reveal ─────────────────────────────────────────────────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.scroll-reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
 
 /* ── Hero fade-in ──────────────────────────────────────────────────────────── */
 @keyframes hero-fade-up {
@@ -926,13 +930,6 @@ section, footer { background: transparent; }
 
   update(); /* set initial theme without waiting for first scroll */
 
-  /* ── LOGO COLLAPSE ON SCROLL ─────────────────────────────────────────── */
-  const hdr = document.querySelector('.site-header');
-  function updateLogo() {
-    hdr.classList.toggle('is-scrolled', window.scrollY > 10);
-  }
-  window.addEventListener('scroll', updateLogo, { passive: true });
-  updateLogo();
 
 
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
@@ -1098,6 +1095,42 @@ section, footer { background: transparent; }
   drawHeroLines(document.getElementById('hero-section'),  'rgba(200,199,193,0.35)');
   drawBarcodes(document.getElementById('stats-section'), 'rgba(200,199,193,0.35)');
   drawBarcodes(document.getElementById('faq-section'),   'rgba(200,199,193,0.35)');
+})();
+
+/* ── SCROLL REVEAL ─────────────────────────────────────────────────────────── */
+(function () {
+  const targets = [
+    ...document.querySelectorAll([
+      'section:not(#hero-section) > *',
+      '.stat',
+      '.host-card',
+      '.sched-item',
+      '.faq-item',
+      '.included-row',
+      'footer > *',
+    ].join(', '))
+  ];
+
+  /* stagger siblings that share the same parent */
+  const counts = new Map();
+  targets.forEach(el => {
+    el.classList.add('scroll-reveal');
+    const p   = el.parentElement;
+    const idx = counts.get(p) || 0;
+    el.style.transitionDelay = `${(idx * 0.09).toFixed(2)}s`;
+    counts.set(p, idx + 1);
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  targets.forEach(el => io.observe(el));
 })();
 </script>
 
