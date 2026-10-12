@@ -958,6 +958,9 @@ section, footer { background: transparent; }
       pointerEvents: 'none',
     });
 
+    const PERIOD = 3.5;
+    const SWEEP  = 1.4;
+
     for (let i = 0; i < N; i++) {
       const t  = i / (N - 1);
       const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t); /* exponential thin→thick */
@@ -968,6 +971,10 @@ section, footer { background: transparent; }
       r.setAttribute('width',  lw.toFixed(2));
       r.setAttribute('height', H);
       r.setAttribute('fill',   fill);
+      r.style.transformBox    = 'fill-box';
+      r.style.transformOrigin = '50% 50%';
+      const delay = -(PERIOD / 2) + t * SWEEP;
+      r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
       svg.appendChild(r);
     }
 
