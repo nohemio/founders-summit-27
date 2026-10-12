@@ -242,6 +242,19 @@ img { display: block; }
   /* maintain Figma aspect ratio */
   height: 40px;
   width: calc(40px * (268.113 / 80.995)); /* ≈ 132px */
+  overflow: hidden;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text logo-parts fade out as the mark clips in */
+.logo-variant .logo-part:not(:first-child) {
+  transition: opacity 0.3s ease;
+}
+.site-header.is-scrolled .logo-wrap {
+  width: 38px; /* just the logomark */
+}
+.site-header.is-scrolled .logo-variant .logo-part:not(:first-child) {
+  opacity: 0;
 }
 
 /* Footer logo is larger */
@@ -488,6 +501,24 @@ section, footer { background: transparent; }
 }
 .footer-meta { display: flex; gap: 64px; align-items: flex-end; }
 .footer-meta-item { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Hero fade-in ──────────────────────────────────────────────────────────── */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero .hero-eyebrows {
+  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+.hero .display-l {
+  animation: hero-fade-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.28s both;
+}
+.hero .body-m {
+  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.48s both;
+}
+.hero > div:last-of-type {
+  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.65s both;
+}
 
 </style>
 </head>
@@ -896,6 +927,14 @@ section, footer { background: transparent; }
   }, { passive: true });
 
   update(); /* set initial theme without waiting for first scroll */
+
+  /* ── LOGO COLLAPSE ON SCROLL ─────────────────────────────────────────── */
+  const hdr = document.querySelector('.site-header');
+  function updateLogo() {
+    hdr.classList.toggle('is-scrolled', window.scrollY > 10);
+  }
+  window.addEventListener('scroll', updateLogo, { passive: true });
+  updateLogo();
 
 
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
