@@ -898,7 +898,77 @@ section, footer { background: transparent; }
   update(); /* set initial theme without waiting for first scroll */
 
 
-  /* ── BARCODE ANIMATION ─────────────────────────────────────────────────── */
+  /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* Hero: thin→thick left-to-right, grow on hover */
+  function drawHeroLines(el, fill) {
+    const N       = 52;    /* number of lines across full width */
+    const LINE_H  = 240;   /* max line height (SVG canvas height in px) */
+    const REST    = 0.35;  /* resting scaleY (~84px tall) */
+    const MIN_LW  = 1;     /* leftmost line width */
+    const MAX_LW  = 11;    /* rightmost line width */
+    const RADIUS  = 260;   /* hover influence radius in px */
+
+    const elW = el.offsetWidth || 1440;
+    const GAP = elW / N;
+
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${elW} ${LINE_H}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    Object.assign(svg.style, {
+      position:      'absolute',
+      bottom:        '0',
+      left:          '0',
+      width:         '100%',
+      height:        LINE_H + 'px',
+      overflow:      'visible',
+      pointerEvents: 'none',
+    });
+
+    const lines = [];
+    for (let i = 0; i < N; i++) {
+      const t  = i / (N - 1);
+      const lw = MIN_LW + t * (MAX_LW - MIN_LW);
+      const cx = GAP * i + GAP / 2;
+      const x  = cx - lw / 2;
+
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x',      x.toFixed(2));
+      r.setAttribute('y',      '0');
+      r.setAttribute('width',  lw.toFixed(2));
+      r.setAttribute('height', LINE_H);
+      r.setAttribute('fill',   fill);
+      r.style.transformBox    = 'fill-box';
+      r.style.transformOrigin = '50% 100%';   /* scale up from bottom */
+      r.style.transform       = `scaleY(${REST})`;
+      r.style.transition      = 'transform 0.45s cubic-bezier(0.4,0,0.2,1)';
+
+      svg.appendChild(r);
+      lines.push({ r, cx });
+    }
+
+    el.appendChild(svg);
+
+    el.addEventListener('mousemove', e => {
+      const bb = el.getBoundingClientRect();
+      const mx = e.clientX - bb.left;
+      lines.forEach(({ r, cx }) => {
+        const d     = Math.abs(mx - cx);
+        const t     = Math.max(0, 1 - d / RADIUS);
+        const scale = REST + t * (1 - REST);
+        r.style.transform = `scaleY(${scale.toFixed(3)})`;
+      });
+    });
+
+    el.addEventListener('mouseleave', () => {
+      lines.forEach(({ r }) => {
+        r.style.transform = `scaleY(${REST})`;
+      });
+    });
+  }
+
+  /* Stats / FAQ: original barcode style */
   const BELL = [
     1.431, 1.588, 2.055, 2.840, 3.935, 5.350, 7.073,
     9.112, 11.464, 14.131,
@@ -907,7 +977,6 @@ section, footer { background: transparent; }
   const MIN_W = 1.431, COLS = 31, COL_STEP = 15.877, FIRST_CX = 0.716;
   const SVG_W = 478.977, ROW_H = 100;
   const PEAKS = [25, 20, 15];
-  const NS = 'http://www.w3.org/2000/svg';
 
   function bw(col, peak) {
     const i = col - peak + 9;
@@ -961,9 +1030,7 @@ section, footer { background: transparent; }
     });
   }
 
-  /* Draw barcodes with a semi-transparent white so they look like stripes
-     against whatever background colour is currently shown.                   */
-  drawBarcodes(document.getElementById('hero-section'),  'rgba(200,199,193,0.35)');
+  drawHeroLines(document.getElementById('hero-section'),  'rgba(200,199,193,0.35)');
   drawBarcodes(document.getElementById('stats-section'), 'rgba(200,199,193,0.35)');
   drawBarcodes(document.getElementById('faq-section'),   'rgba(200,199,193,0.35)');
 })();
