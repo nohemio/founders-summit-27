@@ -39,6 +39,10 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
+@keyframes hero-breathe {
+  0%, 100% { transform: scaleY(0.55); }
+  50%       { transform: scaleY(1); }
+}
 
 /* ── Theme tokens ──────────────────────────────────────────────────────────── */
 :root {
@@ -928,15 +932,15 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: matches Figma — 65 lines, exponential width 0.68→21.79px, uniform height.
-     bar-widen pulse sweeps left→right via sequential CSS animation delays.        */
+  /* Hero: matches Figma — 65 lines, exponential width 0.68→21.79px, 500px tall.
+     Subtle scaleY breath sweeps left→right slowly.                               */
   function drawHeroLines(el, fill) {
     const N      = 65;
     const LINE_H = 500;
-    const MIN_LW = 0.68;   /* thinnest bar (px) — matches Figma */
-    const MAX_LW = 21.79;  /* thickest bar (px) — matches Figma */
-    const PERIOD = 5;      /* animation cycle duration (s) */
-    const SWEEP  = 2.5;    /* seconds for wave to travel left→right */
+    const MIN_LW = 0.68;   /* thinnest bar — matches Figma */
+    const MAX_LW = 21.79;  /* thickest bar — matches Figma */
+    const PERIOD = 7;      /* seconds per breath cycle */
+    const SWEEP  = 3.5;    /* seconds for wave to travel left→right */
 
     const elW = el.offsetWidth || 1440;
     const GAP = elW / N;
@@ -952,8 +956,7 @@ section, footer { background: transparent; }
 
     for (let i = 0; i < N; i++) {
       const t  = i / (N - 1);
-      /* exponential progression matches Figma curve exactly */
-      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t);
+      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t); /* exponential — matches Figma */
       const cx = GAP * i + GAP / 2;
 
       const r = document.createElementNS(NS, 'rect');
@@ -963,14 +966,11 @@ section, footer { background: transparent; }
       r.setAttribute('height', LINE_H);
       r.setAttribute('fill',   fill);
       r.style.transformBox    = 'fill-box';
-      r.style.transformOrigin = '50% 50%';
+      r.style.transformOrigin = '50% 100%'; /* grow up from bottom */
 
-      if (lw > MIN_LW) {
-        r.style.setProperty('--s-thin', (MIN_LW / lw).toFixed(4));
-        /* delay: left (i=0) peaks at t=0, right (i=N-1) peaks at t=SWEEP */
-        const delay = -(PERIOD / 2) + t * SWEEP;
-        r.style.animation = `bar-widen ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
-      }
+      /* left peaks first, right peaks last — slow gentle sweep */
+      const delay = -(PERIOD / 2) + t * SWEEP;
+      r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
 
       svg.appendChild(r);
     }
