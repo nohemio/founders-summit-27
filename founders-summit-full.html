@@ -296,10 +296,9 @@ section, footer { background: transparent; }
 #hero-lines-section {
   position: relative;
   width: 100%;
-  height: 544px;           /* 4 rows × 136px */
+  height: 400px;
   overflow: hidden;
   background-color: var(--theme-bg);
-  margin-top: -40px;       /* peek into bottom of hero */
 }
 
 /* ── ABOUT ─────────────────────────────────────────────────────────────────── */
@@ -941,32 +940,17 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: matches Figma — 65 lines, exponential width 0.68→21.79px, 500px tall.
-     Subtle scaleY breath sweeps left→right slowly.                               */
+  /* Hero: brand guide — single row, thin→thick left to right, static */
   function drawHeroLines(el, fill) {
-    const ROW_H  = 136;
-    const ROWS   = 4;
-    const TOTAL  = ROW_H * ROWS;  /* 544px */
-    const GAP    = 26;            /* px between bar centres */
-    const PERIOD = 3.5;
-    const SWEEP  = 1.4;
+    const N      = 65;
+    const MIN_LW = 0.68;
+    const MAX_LW = 21.79;
+    const H      = el.offsetHeight || 400;
+    const elW    = el.offsetWidth  || 1440;
+    const GAP    = elW / N;
 
-    /* Width groups: [width, count] — thick→thin (top 2 rows) */
-    const THICK_THIN = [[18,4],[12,7],[8,7],[5,7],[3,6],[2,7],[1,18]];
-    /* Reversed for bottom 2 rows: thin→thick */
-    const THIN_THICK = [[1,18],[2,7],[3,6],[5,7],[8,7],[12,7],[18,4]];
-
-    function expandGroups(groups) {
-      return groups.flatMap(([w, n]) => Array(n).fill(w));
-    }
-
-    const wTT = expandGroups(THICK_THIN); /* 56 widths, thick→thin */
-    const wTk = expandGroups(THIN_THICK); /* 56 widths, thin→thick */
-    const N   = wTT.length;              /* 56 */
-
-    const elW = el.offsetWidth || 1440;
     const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${elW} ${TOTAL}`);
+    svg.setAttribute('viewBox', `0 0 ${elW} ${H}`);
     svg.setAttribute('preserveAspectRatio', 'none');
     Object.assign(svg.style, {
       position: 'absolute', top: '0', left: '0',
@@ -974,26 +958,17 @@ section, footer { background: transparent; }
       pointerEvents: 'none',
     });
 
-    for (let row = 0; row < ROWS; row++) {
-      const widths       = row < 2 ? wTT : wTk;
-      const rowY         = row * ROW_H;
-      const rowTimeShift = row * (PERIOD / ROWS);
-
-      widths.forEach((lw, i) => {
-        const cx = GAP * i + GAP / 2;
-        const t  = i / (N - 1);
-        const r  = document.createElementNS(NS, 'rect');
-        r.setAttribute('x',      (cx - lw / 2).toFixed(2));
-        r.setAttribute('y',      rowY);
-        r.setAttribute('width',  lw.toFixed(2));
-        r.setAttribute('height', ROW_H);
-        r.setAttribute('fill',   fill);
-        r.style.transformBox    = 'fill-box';
-        r.style.transformOrigin = '50% 50%';
-        const delay = -(PERIOD / 2) + t * SWEEP - rowTimeShift;
-        r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
-        svg.appendChild(r);
-      });
+    for (let i = 0; i < N; i++) {
+      const t  = i / (N - 1);
+      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t); /* exponential thin→thick */
+      const cx = GAP * i + GAP / 2;
+      const r  = document.createElementNS(NS, 'rect');
+      r.setAttribute('x',      (cx - lw / 2).toFixed(2));
+      r.setAttribute('y',      '0');
+      r.setAttribute('width',  lw.toFixed(2));
+      r.setAttribute('height', H);
+      r.setAttribute('fill',   fill);
+      svg.appendChild(r);
     }
 
     el.appendChild(svg);
