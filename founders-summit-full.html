@@ -40,8 +40,8 @@
   50%       { opacity: 0; }
 }
 @keyframes hero-breathe {
-  0%, 100% { transform: scaleY(0.55); }
-  50%       { transform: scaleY(1); }
+  0%, 100% { transform: scaleX(0.15); }
+  50%       { transform: scaleX(1); }
 }
 
 /* ── Theme tokens ──────────────────────────────────────────────────────────── */
@@ -988,7 +988,7 @@ section, footer { background: transparent; }
         r.setAttribute('height', ROW_H);
         r.setAttribute('fill',   fill);
         r.style.transformBox    = 'fill-box';
-        r.style.transformOrigin = '50% 100%';
+        r.style.transformOrigin = '50% 50%';
         const delay = -(PERIOD / 2) + t * SWEEP - rowTimeShift;
         r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
         svg.appendChild(r);
