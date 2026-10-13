@@ -1010,8 +1010,8 @@ section, footer { background: transparent; }
       for (let i = 0; i < LINES; i++) {
         const phase = (i / LINES + t) % 1;
         const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
-        /* thin → thick on the same geometric ramp as the brand guide bars */
-        const lw = MIN_W * Math.pow(MAX_W / MIN_W, eased) * dpr;
+        /* thin → thick in step with distance from the centre */
+        const lw = (MIN_W + (MAX_W - MIN_W) * eased) * dpr;
         /* fade in over the first half of the trip, out just before the edge */
         ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * Math.min(1, (1 - eased) / FADE);
         for (const side of [-1, 1]) {
