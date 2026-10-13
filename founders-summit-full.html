@@ -283,22 +283,15 @@ section, footer { background: transparent; }
 
 /* ── HERO ──────────────────────────────────────────────────────────────────── */
 .hero {
-  padding: 96px var(--margin) var(--margin);
+  /* bottom padding holds the 54px line strip, kept above the fold */
+  padding: 96px var(--margin) 96px;
   display: flex;
   flex-direction: column;
   gap: 30px;
+  position: relative;
+  overflow: hidden;
 }
 .hero-eyebrows { display: flex; gap: 30px; }
-#hero-lines-section {
-  position: relative;
-  width: 100%;
-  height: 280px;
-  overflow: hidden;
-  background-color: var(--theme-bg);
-}
-@media (max-width: 767px) {
-  #hero-lines-section { height: 160px; }
-}
 
 /* ── ABOUT ─────────────────────────────────────────────────────────────────── */
 .section-about {
@@ -634,9 +627,6 @@ section, footer { background: transparent; }
     <a href="#" class="btn btn-outline label-btn">Nominate someone</a>
   </div>
 </section>
-
-<!-- ─── HERO LINES TRANSITION ──────────────────────────────────────────────── -->
-<div id="hero-lines-section" data-theme="dark"></div>
 
 <!-- ─── ABOUT ───────────────────────────────────────────────────────────────── -->
 <section class="section-about" data-theme="dark">
@@ -1024,39 +1014,7 @@ section, footer { background: transparent; }
     start();
   }
 
-  /* Hero: lines spawn at the centre as hairlines and drift out to both
-     edges, thickening as they go. After twilson.net's "GapsZooming": twenty
-     lines per side, each on an exponential curve so they start slow and
-     accelerate outward; one full pass every 16s.                           */
-  function drawHeroLines(el, color) {
-    const LINES  = 20;          /* lines per side                            */
-    const PERIOD = 16000;       /* ms for a line to travel centre → edge     */
-    const CURVE  = 3;           /* exponential ease; higher = more central   */
-    const MIN_W  = 1;           /* css px at the centre                      */
-    const MAX_W  = 5;           /* css px at the edge                        */
-    const PEAK   = 0.35;        /* max opacity — kept low, stripes tire eyes */
-    const FADE   = 0.15;        /* last share of the trip spent fading out   */
-
-    animateCanvas(el, { inset: '0', width: '100%', height: '100%' }, (ctx, w, h, dpr, now) => {
-      const mid = w / 2, reach = mid;
-      const t = now / PERIOD + 0.19;
-      ctx.fillStyle = color;
-      for (let i = 0; i < LINES; i++) {
-        const phase = (i / LINES + t) % 1;
-        const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
-        /* thin → thick in step with distance from the centre */
-        const lw = (MIN_W + (MAX_W - MIN_W) * eased) * dpr;
-        /* fade in over the first half of the trip, out just before the edge */
-        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * Math.min(1, (1 - eased) / FADE);
-        for (const side of [-1, 1]) {
-          const x = mid + side * eased * reach;
-          ctx.fillRect(x - lw / 2, 0, lw, h);
-        }
-      }
-    });
-  }
-
-  /* Stats / FAQ: evenly spaced lines that gather toward the centre and
+  /* Hero / Stats / FAQ: evenly spaced lines that gather toward the centre and
      relax again, brightening where they bunch. After twilson.net's
      "GapsBreathing": a sine breath (~6.3s) pushed through tanh, so lines
      near the centre move most and the outer ones barely shift.            */
@@ -1156,7 +1114,7 @@ section, footer { background: transparent; }
     });
   }
 
-  drawHeroLines(document.getElementById('hero-lines-section'), '#c8c7c1');
+  drawBreathingRow(document.getElementById('hero-section'),  '#c8c7c1');
   drawBreathingRow(document.getElementById('stats-section'), '#c8c7c1');
   drawBreathingRow(document.getElementById('faq-section'),   '#c8c7c1');
 })();
