@@ -1008,10 +1008,10 @@ section, footer { background: transparent; }
   /* Hero: lines spawn at the centre as hairlines and drift out to both
      edges, thickening as they go. After twilson.net's "GapsZooming": thirty
      lines per side, each on an exponential curve so they start slow and
-     accelerate outward; one full pass every 10s.                           */
+     accelerate outward; one full pass every 16s.                           */
   function drawHeroLines(el, color) {
     const LINES  = 30;          /* lines per side                            */
-    const PERIOD = 10000;       /* ms for a line to travel centre → edge     */
+    const PERIOD = 16000;       /* ms for a line to travel centre → edge     */
     const CURVE  = 3;           /* exponential ease; higher = more central   */
     const MIN_W  = 1;           /* css px at the centre                      */
     const MAX_W  = 5;           /* css px at the edge                        */
