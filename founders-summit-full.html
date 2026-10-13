@@ -39,10 +39,6 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
-@keyframes hero-breathe {
-  0%, 100% { transform: scaleX(0.15); }
-  50%       { transform: scaleX(1); }
-}
 
 /* ── Theme tokens ──────────────────────────────────────────────────────────── */
 :root {
@@ -970,25 +966,12 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: lines spawn at the centre as hairlines and drift out to both
-     edges, thickening as they go. After twilson.net's "GapsZooming", thirty lines per side, each on
-     an exponential curve so they start slow and accelerate outward; one full
-     pass every 10s. Canvas, so it stays crisp at any width.                 */
-  function drawHeroLines(el, color) {
-    const LINES  = 30;          /* lines per side                            */
-    const PERIOD = 10000;       /* ms for a line to travel centre → edge     */
-    const CURVE  = 3;           /* exponential ease; higher = more central   */
-    const MIN_W  = 0.68;        /* css px at the centre — hairline           */
-    const MAX_W  = 21.79;       /* css px at the edge — brand guide's thickest */
-    const PEAK   = 0.6;         /* max opacity                               */
-    const FADE   = 0.15;        /* last share of the trip spent fading out   */
-
+  /* Mount a canvas that fills `style` inside `el` and redraws every frame
+     while on screen. `paint(ctx, w, h, dpr, now)` works in device pixels.
+     Under reduced motion it paints one still frame at now = 0.            */
+  function animateCanvas(el, style, paint) {
     const canvas = document.createElement('canvas');
-    Object.assign(canvas.style, {
-      position: 'absolute', inset: '0',
-      width: '100%', height: '100%',
-      pointerEvents: 'none',
-    });
+    Object.assign(canvas.style, { position: 'absolute', pointerEvents: 'none' }, style);
     el.appendChild(canvas);
     const ctx = canvas.getContext('2d');
 
@@ -997,31 +980,14 @@ section, footer { background: transparent; }
 
     function size() {
       dpr = window.devicePixelRatio || 1;
-      canvas.width  = el.offsetWidth  * dpr;
-      canvas.height = el.offsetHeight * dpr;
+      canvas.width  = canvas.offsetWidth  * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
     }
-
     function draw(now) {
-      const w = canvas.width, h = canvas.height;
-      const mid = w / 2, reach = mid;
-      const t = (reduced.matches ? 0 : now) / PERIOD + 0.19;
-      ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = color;
-      for (let i = 0; i < LINES; i++) {
-        const phase = (i / LINES + t) % 1;
-        const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
-        /* thin → thick in step with distance from the centre */
-        const lw = (MIN_W + (MAX_W - MIN_W) * eased) * dpr;
-        /* fade in over the first half of the trip, out just before the edge */
-        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * Math.min(1, (1 - eased) / FADE);
-        for (const side of [-1, 1]) {
-          const x = mid + side * eased * reach;
-          ctx.fillRect(x - lw / 2, 0, lw, h);
-        }
-      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      paint(ctx, canvas.width, canvas.height, dpr, reduced.matches ? 0 : now);
       ctx.globalAlpha = 1;
     }
-
     function loop(now) {
       draw(now);
       frame = visible && !reduced.matches ? requestAnimationFrame(loop) : 0;
@@ -1037,6 +1003,76 @@ section, footer { background: transparent; }
     }).observe(el);
     reduced.addEventListener('change', () => { draw(0); start(); });
     start();
+  }
+
+  /* Hero: lines spawn at the centre as hairlines and drift out to both
+     edges, thickening as they go. After twilson.net's "GapsZooming": thirty
+     lines per side, each on an exponential curve so they start slow and
+     accelerate outward; one full pass every 10s.                           */
+  function drawHeroLines(el, color) {
+    const LINES  = 30;          /* lines per side                            */
+    const PERIOD = 10000;       /* ms for a line to travel centre → edge     */
+    const CURVE  = 3;           /* exponential ease; higher = more central   */
+    const MIN_W  = 0.68;        /* css px at the centre — hairline           */
+    const MAX_W  = 21.79;       /* css px at the edge — brand guide's thickest */
+    const PEAK   = 0.6;         /* max opacity                               */
+    const FADE   = 0.15;        /* last share of the trip spent fading out   */
+
+    animateCanvas(el, { inset: '0', width: '100%', height: '100%' }, (ctx, w, h, dpr, now) => {
+      const mid = w / 2, reach = mid;
+      const t = now / PERIOD + 0.19;
+      ctx.fillStyle = color;
+      for (let i = 0; i < LINES; i++) {
+        const phase = (i / LINES + t) % 1;
+        const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
+        /* thin → thick in step with distance from the centre */
+        const lw = (MIN_W + (MAX_W - MIN_W) * eased) * dpr;
+        /* fade in over the first half of the trip, out just before the edge */
+        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * Math.min(1, (1 - eased) / FADE);
+        for (const side of [-1, 1]) {
+          const x = mid + side * eased * reach;
+          ctx.fillRect(x - lw / 2, 0, lw, h);
+        }
+      }
+    });
+  }
+
+  /* Stats / FAQ: evenly spaced lines that gather toward the centre and
+     relax again, brightening where they bunch. After twilson.net's
+     "GapsBreathing": a sine breath (~6.3s) pushed through tanh, so lines
+     near the centre move most and the outer ones barely shift.            */
+  function drawBreathingRow(el, color) {
+    const LINES  = 32;
+    const ROW_H  = 54;          /* css px, pinned to the section bottom      */
+    const LINE_W = 1.5;         /* css px                                    */
+    const PEAK   = 0.6;         /* opacity where lines bunch                 */
+    const REST   = 0.1;         /* opacity at even spacing                   */
+
+    animateCanvas(el, { left: '0', bottom: '0', width: '100%', height: ROW_H + 'px' }, (ctx, w, h, dpr, now) => {
+      const pad  = 8 * dpr;
+      const step = (w - 2 * pad) / (LINES - 1);
+      const mid  = w / 2;
+      const s    = Math.sin(0.001 * (now + 1900));
+      const pull = s * (0.8 + 0.2 * s);      /* lingers a little when gathered */
+      const span = 4 * step;
+
+      const xs = [];
+      for (let i = 0; i < LINES; i++) {
+        const x0 = pad + i * step;
+        const pin = Math.sin(Math.PI * i / (LINES - 1));   /* ends stay put */
+        xs.push(x0 + pull * span * Math.tanh((x0 - mid) / span) * pin);
+      }
+
+      ctx.fillStyle = color;
+      const lw = LINE_W * dpr;
+      for (let i = 0; i < LINES; i++) {
+        const gap = Math.min(i > 0 ? xs[i] - xs[i - 1] : Infinity,
+                             i < LINES - 1 ? xs[i + 1] - xs[i] : Infinity);
+        const bunched = Math.min(1, Math.max(0, (1 - gap / step) / 0.4));
+        ctx.globalAlpha = REST + (PEAK - REST) * bunched;
+        ctx.fillRect(xs[i] - lw / 2, 0, lw, h);
+      }
+    });
   }
 
   /* Stats / FAQ: original barcode style */
@@ -1101,48 +1137,9 @@ section, footer { background: transparent; }
     });
   }
 
-  function drawAccordionRow(el, fill) {
-    const ROW_H  = 54;
-    const GAP    = 26;
-    const PERIOD = 3.5;
-    const SWEEP  = 1.4;
-
-    const THICK_THIN = [[18,4],[12,7],[8,7],[5,7],[3,6],[2,7],[1,18]];
-    const widths = THICK_THIN.flatMap(([w, n]) => Array(n).fill(w));
-    const N = widths.length; /* 56 */
-
-    const elW = el.offsetWidth || 1440;
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${elW} ${ROW_H}`);
-    svg.setAttribute('preserveAspectRatio', 'none');
-    Object.assign(svg.style, {
-      position: 'absolute', bottom: '0', left: '0',
-      width: '100%', height: ROW_H + 'px',
-      pointerEvents: 'none',
-    });
-
-    widths.forEach((lw, i) => {
-      const cx    = GAP * i + GAP / 2;
-      const t     = i / (N - 1);
-      const r     = document.createElementNS(NS, 'rect');
-      r.setAttribute('x',      (cx - lw / 2).toFixed(2));
-      r.setAttribute('y',      '0');
-      r.setAttribute('width',  lw.toFixed(2));
-      r.setAttribute('height', ROW_H);
-      r.setAttribute('fill',   fill);
-      r.style.transformBox    = 'fill-box';
-      r.style.transformOrigin = '50% 50%';
-      const delay = -(PERIOD / 2) + t * SWEEP;
-      r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
-      svg.appendChild(r);
-    });
-
-    el.appendChild(svg);
-  }
-
   drawHeroLines(document.getElementById('hero-lines-section'), '#c8c7c1');
-  drawAccordionRow(document.getElementById('stats-section'),   'rgba(200,199,193,0.35)');
-  drawAccordionRow(document.getElementById('faq-section'),      'rgba(200,199,193,0.35)');
+  drawBreathingRow(document.getElementById('stats-section'), '#c8c7c1');
+  drawBreathingRow(document.getElementById('faq-section'),   '#c8c7c1');
 })();
 
 /* ── HERO TITLE SPLIT ──────────────────────────────────────────────────────── */
