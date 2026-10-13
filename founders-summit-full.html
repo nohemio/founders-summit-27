@@ -500,36 +500,66 @@ section, footer { background: transparent; }
 .site-footer .label-meta { font-size: 14px; line-height: 1.4; }
 
 /* ── Scroll reveal ─────────────────────────────────────────────────────────── */
+/* Blur-in, after twilson.net: content arrives out of focus and settles.
+   Blocks blur by .2em and rise 8px; 0.3s ease-in.                            */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+  filter: blur(.2em);
+  transform: translateY(8px);
+  transition: opacity 0.3s ease-in,
+              filter 0.3s ease-in,
+              transform 0.3s ease-in,
               color 0.75s cubic-bezier(0.4, 0, 0.2, 1),
               background-color 0.75s cubic-bezier(0.4, 0, 0.2, 1),
               border-color 0.75s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .scroll-reveal.in-view {
   opacity: 1;
+  filter: none;
   transform: none;
 }
 
 /* ── Hero fade-in ──────────────────────────────────────────────────────────── */
+/* Title enters per character (split in JS), then the rest settles behind it. */
 @keyframes hero-fade-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; filter: blur(.2em); transform: translateY(8px); }
+  to   { opacity: 1; filter: blur(0);    transform: translateY(0); }
+}
+@keyframes blur-in-char {
+  from { opacity: 0; filter: blur(.3em); }
+  to   { opacity: 1; filter: blur(0); }
 }
 .hero .hero-eyebrows {
-  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
-}
-.hero .display-l {
-  animation: hero-fade-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.28s both;
+  animation: hero-fade-up 0.3s ease-in 0s both;
 }
 .hero .body-m {
-  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.48s both;
+  animation: hero-fade-up 0.3s ease-in 0.5s both;
 }
 .hero > div:last-of-type {
-  animation: hero-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.65s both;
+  animation: hero-fade-up 0.3s ease-in 0.55s both;
+}
+.split-word { display: inline-block; white-space: nowrap; }
+.split-char {
+  display: inline-block;
+  animation: blur-in-char 0.3s ease-in both;
+  animation-delay: calc(100ms + var(--i) * 10ms);
+}
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Arrow nudges on hover */
+.btn-arrow { display: inline-block; transition: transform 0.1s ease-out; }
+.btn:hover .btn-arrow { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal { opacity: 1; filter: none; transform: none; transition: none; }
+  .hero .hero-eyebrows, .hero .body-m, .hero > div:last-of-type, .split-char { animation: none; }
+  .btn-arrow { transition: none; }
 }
 
 </style>
@@ -844,7 +874,7 @@ section, footer { background: transparent; }
 <section class="section-cta" data-theme="orange">
   <div class="display-l">Limited seats.<br>Request an invite.</div>
   <div class="cta-btns">
-    <a href="#" class="btn btn-dark label-btn">Request an invitation &nbsp;→</a>
+    <a href="#" class="btn btn-dark label-btn">Request an invitation &nbsp;<span class="btn-arrow" aria-hidden="true">→</span></a>
     <a href="#" class="btn btn-outline label-btn">Nominate someone</a>
   </div>
 </section>
@@ -1085,6 +1115,34 @@ section, footer { background: transparent; }
   drawAccordionRow(document.getElementById('faq-section'),      'rgba(200,199,193,0.35)');
 })();
 
+/* ── HERO TITLE SPLIT ──────────────────────────────────────────────────────── */
+/* One span per character so each can blur in on its own beat. Words stay
+   unbreakable and screen readers get the plain text once.                  */
+(function () {
+  const title = document.querySelector('.hero h1');
+  const label = title.textContent.trim();
+  const visual = document.createElement('span');
+  visual.setAttribute('aria-hidden', 'true');
+  let i = 0;
+  label.split(' ').forEach((part, w) => {
+    if (w) visual.append(' ');
+    const word = document.createElement('span');
+    word.className = 'split-word';
+    for (const ch of part) {
+      const c = document.createElement('span');
+      c.className = 'split-char';
+      c.style.setProperty('--i', i++);
+      c.textContent = ch;
+      word.append(c);
+    }
+    visual.append(word);
+  });
+  const sr = document.createElement('span');
+  sr.className = 'sr-only';
+  sr.textContent = label;
+  title.replaceChildren(sr, visual);
+})();
+
 /* ── SCROLL REVEAL ─────────────────────────────────────────────────────────── */
 (function () {
   const targets = [
@@ -1105,7 +1163,7 @@ section, footer { background: transparent; }
     el.classList.add('scroll-reveal');
     const p   = el.parentElement;
     const idx = counts.get(p) || 0;
-    el.style.transitionDelay = `${(idx * 0.09).toFixed(2)}s`;
+    el.style.transitionDelay = `${(Math.min(idx, 6) * 0.06).toFixed(2)}s`;
     counts.set(p, idx + 1);
   });
 
