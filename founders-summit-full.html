@@ -283,8 +283,9 @@ section, footer { background: transparent; }
 
 /* ── HERO ──────────────────────────────────────────────────────────────────── */
 .hero {
-  /* bottom padding holds the 54px line strip, kept above the fold */
-  padding: 96px var(--margin) 96px;
+  /* bottom padding = 80px breathing room + the 54px line strip; top trimmed
+     so the strip still lands above the fold at 1280x720 */
+  padding: 64px var(--margin) 134px;
   display: flex;
   flex-direction: column;
   gap: 30px;
