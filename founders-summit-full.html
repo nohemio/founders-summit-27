@@ -970,43 +970,73 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: brand guide — single row, thin→thick left to right, static */
-  function drawHeroLines(el, fill) {
-    const N      = 65;
-    const MIN_LW = 0.68;
-    const MAX_LW = 21.79;
-    const ROW_H  = 520;
-    const elW    = el.offsetWidth || 1440;
-    const GAP    = elW / N;
-    const PERIOD = 3.5;
-    const SWEEP  = 1.4;
+  /* Hero: lines spawn at the centre and drift out to both edges, fading as
+     they go. After twilson.net's "GapsZooming": ten lines per side, each on
+     an exponential curve so they start slow and accelerate outward; one full
+     pass every 10s. Canvas, so it stays crisp at any width.                 */
+  function drawHeroLines(el, color) {
+    const LINES  = 10;          /* lines per side                            */
+    const PERIOD = 10000;       /* ms for a line to travel centre → edge     */
+    const CURVE  = 3;           /* exponential ease; higher = more central   */
+    const LINE_W = 1.5;         /* css px                                    */
+    const PEAK   = 0.6;         /* max opacity                               */
 
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${elW} ${ROW_H}`);
-    Object.assign(svg.style, {
-      position: 'absolute', bottom: '0', left: '0',
-      width: '100%', height: ROW_H + 'px',
+    const canvas = document.createElement('canvas');
+    Object.assign(canvas.style, {
+      position: 'absolute', inset: '0',
+      width: '100%', height: '100%',
       pointerEvents: 'none',
     });
+    el.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
 
-    for (let i = 0; i < N; i++) {
-      const t  = i / (N - 1);
-      const lw = MIN_LW * Math.pow(MAX_LW / MIN_LW, t);
-      const cx = GAP * i + GAP / 2;
-      const r  = document.createElementNS(NS, 'rect');
-      r.setAttribute('x',      (cx - lw / 2).toFixed(2));
-      r.setAttribute('y',      '0');
-      r.setAttribute('width',  lw.toFixed(2));
-      r.setAttribute('height', ROW_H);
-      r.setAttribute('fill',   fill);
-      r.style.transformBox    = 'fill-box';
-      r.style.transformOrigin = '50% 50%';
-      const delay = -(PERIOD / 2) + t * SWEEP;
-      r.style.animation = `hero-breathe ${PERIOD}s ease-in-out infinite ${delay.toFixed(3)}s`;
-      svg.appendChild(r);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let dpr = 1, frame = 0, visible = true;
+
+    function size() {
+      dpr = window.devicePixelRatio || 1;
+      canvas.width  = el.offsetWidth  * dpr;
+      canvas.height = el.offsetHeight * dpr;
     }
 
-    el.appendChild(svg);
+    function draw(now) {
+      const w = canvas.width, h = canvas.height;
+      const mid = w / 2, reach = mid;
+      const t = (reduced.matches ? 0 : now) / PERIOD + 0.19;
+      ctx.clearRect(0, 0, w, h);
+      ctx.lineWidth = LINE_W * dpr;
+      ctx.strokeStyle = color;
+      for (let i = 0; i < LINES; i++) {
+        const phase = (i / LINES + t) % 1;
+        const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
+        /* fade in over the first half of the trip, out as it nears the edge */
+        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * (1 - eased);
+        for (const side of [-1, 1]) {
+          const x = mid + side * eased * reach;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function loop(now) {
+      draw(now);
+      frame = visible && !reduced.matches ? requestAnimationFrame(loop) : 0;
+    }
+    function start() { if (!frame) frame = requestAnimationFrame(loop); }
+
+    size();
+    draw(0);
+    new ResizeObserver(() => { size(); draw(performance.now()); }).observe(el);
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) start();
+    }).observe(el);
+    reduced.addEventListener('change', () => { draw(0); start(); });
+    start();
   }
 
   /* Stats / FAQ: original barcode style */
@@ -1110,7 +1140,7 @@ section, footer { background: transparent; }
     el.appendChild(svg);
   }
 
-  drawHeroLines(document.getElementById('hero-lines-section'), 'rgba(200,199,193,0.35)');
+  drawHeroLines(document.getElementById('hero-lines-section'), '#c8c7c1');
   drawAccordionRow(document.getElementById('stats-section'),   'rgba(200,199,193,0.35)');
   drawAccordionRow(document.getElementById('faq-section'),      'rgba(200,199,193,0.35)');
 })();
