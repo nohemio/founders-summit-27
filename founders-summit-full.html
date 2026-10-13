@@ -968,7 +968,14 @@ section, footer { background: transparent; }
 
   /* Mount a canvas that fills `style` inside `el` and redraws every frame
      while on screen. `paint(ctx, w, h, dpr, now)` works in device pixels.
-     Under reduced motion it paints one still frame at now = 0.            */
+
+     Near-still by default: the animation clock runs at IDLE speed and only
+     reaches full speed while the pointer is over `el`, easing between the
+     two so hover never jumps. Touch screens never hover, so mobile stays
+     calm. Under reduced motion it paints one still frame.                  */
+  const IDLE  = 0.08;           /* share of full speed when not hovered      */
+  const EASE  = 600;            /* ms to settle between idle and hover speed */
+
   function animateCanvas(el, style, paint) {
     const canvas = document.createElement('canvas');
     Object.assign(canvas.style, { position: 'absolute', pointerEvents: 'none' }, style);
@@ -977,31 +984,40 @@ section, footer { background: transparent; }
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     let dpr = 1, frame = 0, visible = true;
+    let clock = 0, speed = IDLE, target = IDLE, last = 0;
 
     function size() {
       dpr = window.devicePixelRatio || 1;
       canvas.width  = canvas.offsetWidth  * dpr;
       canvas.height = canvas.offsetHeight * dpr;
     }
-    function draw(now) {
+    function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      paint(ctx, canvas.width, canvas.height, dpr, reduced.matches ? 0 : now);
+      paint(ctx, canvas.width, canvas.height, dpr, reduced.matches ? 0 : clock);
       ctx.globalAlpha = 1;
     }
     function loop(now) {
-      draw(now);
+      const dt = last ? Math.min(now - last, 100) : 0;
+      last = now;
+      speed += (target - speed) * (1 - Math.exp(-dt / EASE));
+      clock += dt * speed;
+      draw();
       frame = visible && !reduced.matches ? requestAnimationFrame(loop) : 0;
+      if (!frame) last = 0;
     }
     function start() { if (!frame) frame = requestAnimationFrame(loop); }
 
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') target = 1; });
+    el.addEventListener('pointerleave', () => { target = IDLE; });
+
     size();
-    draw(0);
-    new ResizeObserver(() => { size(); draw(performance.now()); }).observe(el);
+    draw();
+    new ResizeObserver(() => { size(); draw(); }).observe(el);
     new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
       if (visible) start();
     }).observe(el);
-    reduced.addEventListener('change', () => { draw(0); start(); });
+    reduced.addEventListener('change', () => { draw(); start(); });
     start();
   }
 
