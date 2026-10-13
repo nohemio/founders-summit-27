@@ -292,9 +292,12 @@ section, footer { background: transparent; }
 #hero-lines-section {
   position: relative;
   width: 100%;
-  height: 520px;
+  height: 280px;
   overflow: hidden;
   background-color: var(--theme-bg);
+}
+@media (max-width: 767px) {
+  #hero-lines-section { height: 160px; }
 }
 
 /* ── ABOUT ─────────────────────────────────────────────────────────────────── */
@@ -1022,16 +1025,16 @@ section, footer { background: transparent; }
   }
 
   /* Hero: lines spawn at the centre as hairlines and drift out to both
-     edges, thickening as they go. After twilson.net's "GapsZooming": thirty
+     edges, thickening as they go. After twilson.net's "GapsZooming": twenty
      lines per side, each on an exponential curve so they start slow and
      accelerate outward; one full pass every 16s.                           */
   function drawHeroLines(el, color) {
-    const LINES  = 30;          /* lines per side                            */
+    const LINES  = 20;          /* lines per side                            */
     const PERIOD = 16000;       /* ms for a line to travel centre → edge     */
     const CURVE  = 3;           /* exponential ease; higher = more central   */
     const MIN_W  = 1;           /* css px at the centre                      */
     const MAX_W  = 5;           /* css px at the edge                        */
-    const PEAK   = 0.6;         /* max opacity                               */
+    const PEAK   = 0.35;        /* max opacity — kept low, stripes tire eyes */
     const FADE   = 0.15;        /* last share of the trip spent fading out   */
 
     animateCanvas(el, { inset: '0', width: '100%', height: '100%' }, (ctx, w, h, dpr, now) => {
