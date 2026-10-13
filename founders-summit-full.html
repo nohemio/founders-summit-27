@@ -283,9 +283,8 @@ section, footer { background: transparent; }
 
 /* ── HERO ──────────────────────────────────────────────────────────────────── */
 .hero {
-  /* bottom padding = 80px breathing room + the 54px line strip; top trimmed
-     so the strip still lands above the fold at 1280x720 */
-  padding: 64px var(--margin) 134px;
+  /* bottom padding = 120px breathing room + the 108px line strip */
+  padding: 64px var(--margin) 228px;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -1019,14 +1018,13 @@ section, footer { background: transparent; }
      relax again, brightening where they bunch. After twilson.net's
      "GapsBreathing": a sine breath (~6.3s) pushed through tanh, so lines
      near the centre move most and the outer ones barely shift.            */
-  function drawBreathingRow(el, color) {
+  function drawBreathingRow(el, color, rowHeight = 54) {   /* css px, pinned to the section bottom */
     const LINES  = 160;
-    const ROW_H  = 54;          /* css px, pinned to the section bottom      */
     const LINE_W = 1.5;         /* css px                                    */
     const PEAK   = 0.6;         /* opacity where lines bunch                 */
     const REST   = 0.1;         /* opacity at even spacing                   */
 
-    animateCanvas(el, { left: '0', bottom: '0', width: '100%', height: ROW_H + 'px' }, (ctx, w, h, dpr, now) => {
+    animateCanvas(el, { left: '0', bottom: '0', width: '100%', height: rowHeight + 'px' }, (ctx, w, h, dpr, now) => {
       const pad  = 8 * dpr;
       const step = (w - 2 * pad) / (LINES - 1);
       const mid  = w / 2;
@@ -1115,7 +1113,7 @@ section, footer { background: transparent; }
     });
   }
 
-  drawBreathingRow(document.getElementById('hero-section'),  '#c8c7c1');
+  drawBreathingRow(document.getElementById('hero-section'),  '#c8c7c1', 108);
   drawBreathingRow(document.getElementById('stats-section'), '#c8c7c1');
   drawBreathingRow(document.getElementById('faq-section'),   '#c8c7c1');
 })();
