@@ -970,16 +970,18 @@ section, footer { background: transparent; }
   /* ── LINE ANIMATIONS ──────────────────────────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
 
-  /* Hero: lines spawn at the centre and drift out to both edges, fading as
-     they go. After twilson.net's "GapsZooming": ten lines per side, each on
+  /* Hero: lines spawn at the centre as hairlines and drift out to both
+     edges, thickening as they go. After twilson.net's "GapsZooming": ten lines per side, each on
      an exponential curve so they start slow and accelerate outward; one full
      pass every 10s. Canvas, so it stays crisp at any width.                 */
   function drawHeroLines(el, color) {
     const LINES  = 10;          /* lines per side                            */
     const PERIOD = 10000;       /* ms for a line to travel centre → edge     */
     const CURVE  = 3;           /* exponential ease; higher = more central   */
-    const LINE_W = 1.5;         /* css px                                    */
+    const MIN_W  = 0.68;        /* css px at the centre — hairline           */
+    const MAX_W  = 21.79;       /* css px at the edge — brand guide's thickest */
     const PEAK   = 0.6;         /* max opacity                               */
+    const FADE   = 0.15;        /* last share of the trip spent fading out   */
 
     const canvas = document.createElement('canvas');
     Object.assign(canvas.style, {
@@ -1004,19 +1006,17 @@ section, footer { background: transparent; }
       const mid = w / 2, reach = mid;
       const t = (reduced.matches ? 0 : now) / PERIOD + 0.19;
       ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = LINE_W * dpr;
-      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
       for (let i = 0; i < LINES; i++) {
         const phase = (i / LINES + t) % 1;
         const eased = (Math.exp(CURVE * phase) - 1) / (Math.exp(CURVE) - 1);
-        /* fade in over the first half of the trip, out as it nears the edge */
-        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * (1 - eased);
+        /* thin → thick on the same geometric ramp as the brand guide bars */
+        const lw = MIN_W * Math.pow(MAX_W / MIN_W, eased) * dpr;
+        /* fade in over the first half of the trip, out just before the edge */
+        ctx.globalAlpha = PEAK * Math.min(1, phase / 0.5) * Math.min(1, (1 - eased) / FADE);
         for (const side of [-1, 1]) {
           const x = mid + side * eased * reach;
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, h);
-          ctx.stroke();
+          ctx.fillRect(x - lw / 2, 0, lw, h);
         }
       }
       ctx.globalAlpha = 1;
